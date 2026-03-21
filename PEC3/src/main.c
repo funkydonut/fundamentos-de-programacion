@@ -1,3 +1,10 @@
+/*
+* Author: Diego Bonati Larre
+* Date: 18-03-2026
+* Description: PEC3 - Fundamentos de Programacion 
+* A program that analyzes the stock of a warehouse and determines the status of the warehouse
+*/
+
 #include <stdio.h>
 #include <stdbool.h>
 
@@ -36,15 +43,15 @@ int main() {
     zone2 = stockMatrix[1][0] + stockMatrix[1][1] + stockMatrix[1][2];
     zone3 = stockMatrix[2][0] + stockMatrix[2][1] + stockMatrix[2][2];
 
-    stockOut = true; 
+    stockOut = false;
     for (int i = 0; i < 3; i++) {
         for (int j = 0; j < 3; j++) {
-            if (stockMatrix[i][j] != 0) {
-                stockOut = false;
+            if (stockMatrix[i][j] == 0) {
+                stockOut = true;
                 break;
             }
         }
-        if (stockOut == false) {
+        if (stockOut == true) {
             break;
         }
     }
