@@ -1,0 +1,122 @@
+NOTAS GENERALES:
+- Smart grid with data in file
+- consumo total, media de consumo y pico de consumo (read and print)
+- tarifa aplicada en pico de consumo
+- contabilizar el número de tarifas presente por cada fichero  
+- tarifas: valley (1), flat (2) y peak (3)
+- bool potencia legal (valor >= 0.0). Else lectura erronea
+NOTAS ADICIONALES: 
+    Fichero:
+    - Linea 1: int numero total de lecturas
+    - Lineas siguientes (indefinidas): float total potencia consumida (en kW), código de tarifa
+    Entrada de datos: 
+    - Nombre de Fichero
+    - Sin comprobación. Máximo 100 intentos
+    Procesamiento:
+    - Datos del fichero a vectores [potenica] [tarifa]
+    Salida de datos: 
+
+
+const
+    MAX_READINGS: integer = 100 {Maximum number of readings allowed}
+*    POWER_THRESHOLD: real = 0.0f 
+    {...}
+end const
+
+type
+    tTariffType = {VALLEY, FLAT, PEAK} {Enum to represent tariff types}
+end type
+
+algorithm SmartGridAnalysis
+
+    var
+        powerData: vector[MAX_READINGS] of real; {Array for power values}
+        tariffData: vector[MAX_READINGS] of integer; {Array for tariff types}
+        {...}
+
+        totalConsumption: real; {Sum of valids readings}
+        totalElements: integer; {Number of readings}
+        validReadingsCount: integer; {Number of valid readings}
+        invalidReadingsCount: integer; {Number of invalid readings}
+        averagePower: real; {Average power of readings}
+        maxPower: real; {Maximum power of readings}
+        valleyTariffCounter: integer; 
+        flatTariffCounter: integer;
+        peakTariffCounter: integer;
+        {...}
+
+        i, j: integer;
+        filename: string; {Name of the file to read}
+        fileToRead: file; {File to open}
+    end var
+    
+    {Data input from file}
+    writeString("--- Smart Grid Analysis System (PR1) ---");
+    writeString("LOAD DATA FROM FILE. ENTER FILE NAME >> ");
+    filename := readString();
+    
+    fileToRead := openFile(filename);
+    
+    {Read number of readings from file}
+*   totalElements =: readIntegerFromFile(fileToRead: file): integer; {apuntes PEC3 entrada y salida de datos}
+    
+    {Ensure we don't exceed array capacity}
+    if totalElements > MAX_READINGS then
+        totalElements := MAX_READINGS;
+    end if
+    
+*    {Read power data and tariffs from file} {Unica forma de leer el numero de valores sin inventarme una función nueva; explicar}
+    for i := 1 to totalElements do
+        powerData[i] := readRealFromFile(fileToRead);
+        tariffData[i] := readIntegerFromFile(fileToRead);
+    end for
+    
+    closeFile(fileToRead);
+    
+    {Data Processing}
+    writeString("Processing records...");
+    
+    {Initialize counters}
+    totalConsumption := 0.0;
+    averagePower := 0.0;
+    maxPower := 0.0; 
+    validReadingsCount := 0;
+    invalidReadingsCount := 0;
+    valleyTariffCounter := 0; 
+    flatTariffCounter := 0;
+    peakTariffCounter := 0; 
+    
+ *   for j := 1 to totalElements do {Dudas de posición de los índices en C VS Pseudocódigo UOC}
+        {Process valid/non-valid readings}
+        if powerData[j] is < POWER_THRESHOLD then
+            {Register non-valid readings}
+            invalidReadingsCount := invalidReadingsCount + 1;
+        else
+            {Register valid readings and calculate total consumption}
+            {...}
+            {Check for peak power}
+            {...}
+            {Update tariff counters}
+            {...}
+        end if
+    end for
+    
+    {Data Output}
+    writeString("----------------------------------------");
+    writeString("ANALYSIS SUMMARY");
+    writeString("----------------------------------------");
+    
+    if validReadingsCount > 0 then
+        {Calculate average power}
+        {...}
+        {Output stats and distribution}
+        writeString("Total consumption: ");
+        writeReal(totalConsumption);
+        writeString(" kW");
+        {...}
+        writeString("----------------------------------------");
+    else
+        writeString("No valid data found to perform analysis.");
+    end if
+
+end algorithm
