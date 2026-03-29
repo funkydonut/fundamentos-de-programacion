@@ -4,14 +4,15 @@
 #define POWER_THRESHOLD 0.0f
 
 typedef enum {
-    VALLEY = 0,
-    FLAT = 1,
-    PEAK = 2
+    VALLEY = 1,
+    FLAT = 2,
+    PEAK = 3
 } tTariffType;
 
 int main() {
     float powerData[MAX_READINGS];
     int tariffData[MAX_READINGS];
+    float discardedReadings[MAX_READINGS];
 
     float totalConsumption = 0.0f;
     int totalElements = 0;
@@ -32,6 +33,7 @@ int main() {
     printf("--- Smart Grid Analysis System (PR1) ---\n");
     printf("LOAD DATA FROM FILE. ENTER FILE NAME >> ");
     scanf("%255s", filename);
+    printf("\n");
 
      /* File format is assumed to be always correct. */
     fileToRead = fopen(filename, "r");
@@ -45,7 +47,7 @@ int main() {
     }
 
     /* Read power data and tariffs from file. Data format is assumed to be always correct. */
-    for (i = 1; i < totalElements; i++) {
+    for (i = 0; i < totalElements; i++) {
         fscanf(fileToRead, "%f %d", &powerData[i], &tariffData[i]);
     }
 
@@ -53,20 +55,18 @@ int main() {
 
     printf("Processing %d records...\n", totalElements);
 
-    for (j = 1; j < totalElements; j++) {
+    for (j = 0; j < totalElements; j++) {
         /* Process valid/non-valid readings */
         if (powerData[j] < POWER_THRESHOLD) {
+            discardedReadings[invalidReadingsCount] = powerData[j];
             invalidReadingsCount++;
         } else {
             /* Register valid readings and calculate total consumption */
             validReadingsCount++;
             totalConsumption += powerData[j];
 
-            /* Check for peak power among valid readings */
-            if (j != 1 && powerData[j] < powerData[j - 1]) {
-                peakPower = powerData[j - 1];
-                peakTariff = tariffData[j - 1];
-            } else {
+            /* Check for maximum peak power among valid readings */
+            if (validReadingsCount == 1 || powerData[j] > peakPower) {
                 peakPower = powerData[j];
                 peakTariff = tariffData[j];
             }
@@ -107,11 +107,19 @@ int main() {
             printf("PEAK");
         }
         printf(")\n");
+        printf("\n");
 
         printf("Distribution by Tariff:\n");
         printf("- Valley intervals: %d\n", valleyTariffCounter);
         printf("- Flat intervals: %d\n", flatTariffCounter);
         printf("- Peak intervals: %d\n", peakTariffCounter);
+        printf("\n");
+        printf("Discarded readings: %d\n", invalidReadingsCount);
+        if (invalidReadingsCount > 0) {
+            for (i = 0; i < invalidReadingsCount; i++) {
+                printf("%.2f kW\n", discardedReadings[i]);
+            }
+        }
         printf("----------------------------------------\n");
     } else {
         printf("No valid data found to perform analysis.\n");

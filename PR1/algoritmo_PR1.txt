@@ -5,13 +5,14 @@ const
 end const
 
 type
-    tTariffType = {VALLEY, FLAT, PEAK} {Enum to represent tariff types}
+    tTariffType = {VALLEY=1, FLAT=2, PEAK=3} {Enum to represent tariff types (matches input file)}
 end type
 
 algorithm SmartGridAnalysis
     var
         powerData: vector[MAX_READINGS] of real; {Array for power values}
         tariffData: vector[MAX_READINGS] of integer; {Array for tariff types}
+        discardedReadings: vector[MAX_READINGS] of real; {Array for discarded (invalid) power readings}
         totalConsumption: real; {Sum of valids readings}
         totalElements: integer; {Number of readings}
         validReadingsCount: integer; {Number of valid readings}
@@ -35,15 +36,15 @@ algorithm SmartGridAnalysis
     fileToRead := openFile(filename);
     
     {Read number of readings from file}
-*   totalElements =: readIntegerFromFile(fileToRead: file): integer; {apuntes PEC3 entrada y salida de datos}
+*   totalElements := readIntegerFromFile(fileToRead: file): integer; {apuntes PEC3 entrada y salida de datos}
     
     {Ensure we don't exceed array capacity}
     if totalElements > MAX_READINGS then
         totalElements := MAX_READINGS;
     end if
     
-*    {Read power data and tariffs from file} {Unica forma de leer el numero de valores sin inventarme una función nueva; explicar}
-    for i := 1 to totalElements do
+*    {Read power data and tariffs from file}
+    for i := 0 to totalElements - 1 do
         powerData[i] := readRealFromFile(fileToRead);
         tariffData[i] := readIntegerFromFile(fileToRead);
     end for
@@ -65,22 +66,21 @@ algorithm SmartGridAnalysis
     flatTariffCounter := 0;
     peakTariffCounter := 0; 
     
- *   for j := 1 to totalElements do {Dudas de posición de los índices en C VS Pseudocódigo UOC} 
+ *   for j := 0 to totalElements - 1 do
         {Process valid/non-valid readings}
         if powerData[j] is < POWER_THRESHOLD then
             {Register non-valid readings}
+            discardedReadings[invalidReadingsCount] := powerData[j];
             invalidReadingsCount := invalidReadingsCount + 1;
         else
             {Register valid readings and calculate total consumption}
             validReadingsCount := validReadingsCount + 1; 
             totalConsumption := totalConsumption + powerData[j]; 
-            {Check for peak power}
- *           if not (j = 1) and powerData[j] < powerData[j-1] {Repaso de operador "not"}
-                peakPower := powerData[j-1];
-                peakTariff := tariffData[j-1];
-            else 
+            {Check for maximum peak power among valid readings}
+            if (validReadingsCount = 1) or (powerData[j] > peakPower) then
                 peakPower := powerData[j];
-                peakTariff := tariffData[j]; 
+                peakTariff := tariffData[j];
+            end if
             {Update tariff counters}
 *            switch tariffData[j] {Switch mejor if...else}
                 case tariffData[j] = VALLEY then
@@ -130,9 +130,27 @@ algorithm SmartGridAnalysis
         writeString("- Flat intervals: ");
         writeInteger(flatTariffCounter); 
         writeString("- Peak intervals: ");
-        writeInteger("peakTariffCounter);
+        writeInteger(peakTariffCounter);
+        writeString("Discarded readings: ");
+        writeInteger(invalidReadingsCount);
+*        {Output discarded readings list (one per line)} {No estaba en el enunciado, pero si en los ejemplos de impresión. Explicar de forma somera.}
+        if invalidReadingsCount > 0 then
+            for i := 0 to invalidReadingsCount - 1 do
+ *               writeReal(discardedReadings[i]); {Se quitan los guiones para mostrar los numeros negativos directamente}
+                writeString(" kW");
+            end for
+        end if
+        
         writeString("----------------------------------------");
     else
         writeString("No valid data found to perform analysis.");
     end if
 end algorithm
+
+Problemas al compilar:
+- Índices mal recorridos (off-by-one): empecé los bucles en 1 y terminé en < totalElements, así que no leía ni procesaba la última lectura del fichero. Por eso el consumo total y la media salían más bajos (faltaba un dato válido).
+- Tarifas desalineadas con el fichero: el fichero usaba tarifas 1, 2 y 3, pero mi enum/switch estaba pensado para 0, 1 y 2. Eso hacía que los contadores por tarifa fueran incorrectos (y algunos casos cayesen en default).
+- Cálculo incorrecto del “Maximum peak”: en vez de guardar el máximo global entre las lecturas válidas, iba sobrescribiendo el valor comparando con la lectura anterior, así que al final no necesariamente quedaba el mayor.
+
+Otros: 
+- Dudas con los satlos de linea en Pseudocódigo (al no econtrar referencias no se indican con writeString())
