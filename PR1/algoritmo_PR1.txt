@@ -1,26 +1,7 @@
-NOTAS GENERALES:
-- Smart grid with data in file
-- consumo total, media de consumo y pico de consumo (read and print)
-- tarifa aplicada en pico de consumo
-- contabilizar el número de tarifas presente por cada fichero  
-- tarifas: valley (1), flat (2) y peak (3)
-- bool potencia legal (valor >= 0.0). Else lectura erronea
-NOTAS ADICIONALES: 
-    Fichero:
-    - Linea 1: int numero total de lecturas
-    - Lineas siguientes (indefinidas): float total potencia consumida (en kW), código de tarifa
-    Entrada de datos: 
-    - Nombre de Fichero
-    - Sin comprobación. Máximo 100 intentos
-    Procesamiento:
-    - Datos del fichero a vectores [potenica] [tarifa]
-    Salida de datos: 
-
 
 const
     MAX_READINGS: integer = 100 {Maximum number of readings allowed}
 *    POWER_THRESHOLD: real = 0.0f 
-    {...}
 end const
 
 type
@@ -28,23 +9,19 @@ type
 end type
 
 algorithm SmartGridAnalysis
-
     var
         powerData: vector[MAX_READINGS] of real; {Array for power values}
         tariffData: vector[MAX_READINGS] of integer; {Array for tariff types}
-        {...}
-
         totalConsumption: real; {Sum of valids readings}
         totalElements: integer; {Number of readings}
         validReadingsCount: integer; {Number of valid readings}
         invalidReadingsCount: integer; {Number of invalid readings}
         averagePower: real; {Average power of readings}
-        maxPower: real; {Maximum power of readings}
+        peakPower: real; {Maximum power of readings}
+        peakTariff: integer; {Maximum power tariff}
         valleyTariffCounter: integer; 
         flatTariffCounter: integer;
         peakTariffCounter: integer;
-        {...}
-
         i, j: integer;
         filename: string; {Name of the file to read}
         fileToRead: file; {File to open}
@@ -74,30 +51,48 @@ algorithm SmartGridAnalysis
     closeFile(fileToRead);
     
     {Data Processing}
-    writeString("Processing records...");
+    writeString("Processing ");
+    writeInteger(totalElements);
+    writeString(" records...");
     
     {Initialize counters}
     totalConsumption := 0.0;
     averagePower := 0.0;
-    maxPower := 0.0; 
+    peakPower := 0.0; 
     validReadingsCount := 0;
     invalidReadingsCount := 0;
     valleyTariffCounter := 0; 
     flatTariffCounter := 0;
     peakTariffCounter := 0; 
     
- *   for j := 1 to totalElements do {Dudas de posición de los índices en C VS Pseudocódigo UOC}
+ *   for j := 1 to totalElements do {Dudas de posición de los índices en C VS Pseudocódigo UOC} 
         {Process valid/non-valid readings}
         if powerData[j] is < POWER_THRESHOLD then
             {Register non-valid readings}
             invalidReadingsCount := invalidReadingsCount + 1;
         else
             {Register valid readings and calculate total consumption}
-            {...}
+            validReadingsCount := validReadingsCount + 1; 
+            totalConsumption := totalConsumption + powerData[j]; 
             {Check for peak power}
-            {...}
+ *           if not (j = 1) and powerData[j] < powerData[j-1] {Repaso de operador "not"}
+                peakPower := powerData[j-1];
+                peakTariff := tariffData[j-1];
+            else 
+                peakPower := powerData[j];
+                peakTariff := tariffData[j]; 
             {Update tariff counters}
-            {...}
+*            switch tariffData[j] {Switch mejor if...else}
+                case tariffData[j] = VALLEY then
+                    valleyTariffCounter := valleyTariffCounter + 1;
+                end case
+                case tariffData[j] = FLAT then
+                    flatTariffCounter := flatTariffCounter + 1;
+                end case
+                case tariffData[j] = PEAK then
+                    peakTariffCounter := peakTariffCounter + 1;
+                end case
+            end switch         
         end if
     end for
     
@@ -108,15 +103,36 @@ algorithm SmartGridAnalysis
     
     if validReadingsCount > 0 then
         {Calculate average power}
-        {...}
+        averagePower := totalConsumption / validReadingsCount; 
         {Output stats and distribution}
         writeString("Total consumption: ");
         writeReal(totalConsumption);
         writeString(" kW");
-        {...}
+        writeString("Average power: ");
+        writeReal(averagePower);
+        writeString(" kW");
+        writeString("Maximum peak: ");
+        writeReal(peakPower);
+        writeString(" kW (Tariff: ");
+        if peakTariff = VALLEY then
+            writeString("VALLEY");
+        else
+            if peakTariff = FLAT then
+                writeString("FLAT");
+            else
+                writeString("PEAK");
+            end if
+        end if
+        writeString(")");
+        writeString("Distribution by Tariff: ");
+        writeString("- Valley intervals: ");
+        writeInteger(valleyTariffCounter); 
+        writeString("- Flat intervals: ");
+        writeInteger(flatTariffCounter); 
+        writeString("- Peak intervals: ");
+        writeInteger("peakTariffCounter);
         writeString("----------------------------------------");
     else
         writeString("No valid data found to perform analysis.");
     end if
-
 end algorithm
