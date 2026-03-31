@@ -1,11 +1,11 @@
 
 const
     MAX_READINGS: integer = 100 {Maximum number of readings allowed}
-*    POWER_THRESHOLD: real = 0.0f 
+    POWER_THRESHOLD: real = 0.0
 end const
 
 type
-    tTariffType = {VALLEY=1, FLAT=2, PEAK=3} {Enum to represent tariff types (matches input file)}
+    tTariffType = {VALLEY=1, FLAT=2, PEAK=3} {Enum to represent tariff types}
 end type
 
 algorithm SmartGridAnalysis
@@ -36,14 +36,14 @@ algorithm SmartGridAnalysis
     fileToRead := openFile(filename);
     
     {Read number of readings from file}
-*   totalElements := readIntegerFromFile(fileToRead: file): integer; {apuntes PEC3 entrada y salida de datos}
+    totalElements := readIntegerFromFile(fileToRead: file): integer; {apuntes PEC3 entrada y salida de datos}
     
     {Ensure we don't exceed array capacity}
     if totalElements > MAX_READINGS then
         totalElements := MAX_READINGS;
     end if
     
-*    {Read power data and tariffs from file}
+    {Read power data and tariffs from file}
     for i := 0 to totalElements - 1 do
         powerData[i] := readRealFromFile(fileToRead);
         tariffData[i] := readIntegerFromFile(fileToRead);
@@ -66,7 +66,7 @@ algorithm SmartGridAnalysis
     flatTariffCounter := 0;
     peakTariffCounter := 0; 
     
- *   for j := 0 to totalElements - 1 do
+    for j := 0 to totalElements - 1 do
         {Process valid/non-valid readings}
         if powerData[j] is < POWER_THRESHOLD then
             {Register non-valid readings}
@@ -82,7 +82,7 @@ algorithm SmartGridAnalysis
                 peakTariff := tariffData[j];
             end if
             {Update tariff counters}
-*            switch tariffData[j] {Switch mejor if...else}
+            switch tariffData[j] {Switch mejor if...else}
                 case tariffData[j] = VALLEY then
                     valleyTariffCounter := valleyTariffCounter + 1;
                 end case
@@ -133,10 +133,10 @@ algorithm SmartGridAnalysis
         writeInteger(peakTariffCounter);
         writeString("Discarded readings: ");
         writeInteger(invalidReadingsCount);
-*        {Output discarded readings list (one per line)} {No estaba en el enunciado, pero si en los ejemplos de impresión. Explicar de forma somera.}
+        {Output discarded readings list (one per line)} {No estaba en el enunciado, pero si en los ejemplos de impresión. Explicar de forma somera.}
         if invalidReadingsCount > 0 then
             for i := 0 to invalidReadingsCount - 1 do
- *               writeReal(discardedReadings[i]); {Se quitan los guiones para mostrar los numeros negativos directamente}
+                writeReal(discardedReadings[i]); 
                 writeString(" kW");
             end for
         end if
@@ -146,6 +146,17 @@ algorithm SmartGridAnalysis
         writeString("No valid data found to perform analysis.");
     end if
 end algorithm
+
+
+Retos: 
+- Pseudocodigo
+- Redactar bien operaciones con el tipo File
+- Funciones writeString y real 
+- Formato de los bucles for
+- Creación, guardado de valores, lectura y uso  en bucles e ifs. 
+- Max peak check, detección y almacenado de valores erroneos. 
+
+
 
 Problemas al compilar:
 - Índices mal recorridos (off-by-one): empecé los bucles en 1 y terminé en < totalElements, así que no leía ni procesaba la última lectura del fichero. Por eso el consumo total y la media salían más bajos (faltaba un dato válido).
