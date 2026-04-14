@@ -1,6 +1,6 @@
 /*
 * Author: Diego Bonati Larre
-* Date: 12-04-2026
+* Date: 15-04-2026
 * Description: PEC4 - Fundamentos de Programacion 
 * A program that compares two solar panels and determines the best one based on efficiency and installation cost
 */
@@ -52,15 +52,17 @@ int main() {
     } else {
         bestBrand = firstPanel.brand;
         for (int i = 0; i < MAX_BRAND_CHARACTERS; i++) {
+            /* Ensures break in case the brand names are equal */
             if (firstPanel.brand[i] == secondPanel.brand[i]) {
-                if (firstPanel.brand[i] == '\0') { /* Asegura el break en caso de que el brand sea igual */
+                if (firstPanel.brand[i] == '\0') { 
                     break;
                 }
                 continue;
             } else if (firstPanel.brand[i] < secondPanel.brand[i]) {
                 bestBrand = firstPanel.brand;
                 break;
-            } else { /* firstPanel.brand[i] > secondPanel.brand[i] */
+            /* This is the case where firstPanel.brand[i] > secondPanel.brand[i] */
+            } else { 
                 bestBrand = secondPanel.brand;
                 break;
             } 

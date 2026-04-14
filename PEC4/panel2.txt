@@ -1,0 +1,1 @@
+GenericSolar 400.0 2.0 400
