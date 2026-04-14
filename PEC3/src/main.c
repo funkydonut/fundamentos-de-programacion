@@ -10,7 +10,7 @@
 
 #define ZONE_WARNING_THRESHOLD 15
 #define LOW_INVENTORY_THRESHOLD 100
-#define FILENAME_LENGTH 13+1
+#define FILENAME_LENGTH 14+1
 
 int main() {
     int stockMatrix[3][3];

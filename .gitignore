@@ -1,0 +1,6 @@
+.DS_Store
+
+# Built artifacts (keep sources only)
+PEC4/pec4.out
+PR1/pr1
+

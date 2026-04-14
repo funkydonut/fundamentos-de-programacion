@@ -1,3 +1,10 @@
+/*
+* Author: Diego Bonati Larre
+* Date: 29-03-2026
+* Description: PR1 - Fundamentos de Programacion 
+* A program that analyzes the power data and tariffs of a smart grid
+*/
+
 #include <stdio.h>
 
 #define MAX_READINGS 100
@@ -10,6 +17,7 @@ typedef enum {
 } tTariffType;
 
 int main() {
+        
     float powerData[MAX_READINGS];
     int tariffData[MAX_READINGS];
     float discardedReadings[MAX_READINGS];
