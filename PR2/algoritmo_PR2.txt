@@ -1,0 +1,176 @@
+const
+    MAX_NODES: integer = 20 {Maximum number of nodes}
+    SECTORS_PER_NODE: integer = 5; {Number of sectors per node}
+    MAX_FILE_NAME: integer = 101; {Max filename length in C (100+1 for '\0')}
+    MAX_LINE: integer = 514; {Max input line buffer length in C}
+    MAX_NAME_LENGTH: integer = 26; {Max nodeName length in C (25+1 for '\0')}
+    OVERLOAD_TOTAL_THRESHOLD: real = 500.0; {Maximum allowed total consumption (kW)}
+    OVERLOAD_SECTOR_THRESHOLD: real = 150.0; {Critical consumption per sector (kW)}
+end const
+
+type
+    {Enum to represent sector types}
+    tSectorType = {INDUSTRY, RESIDENTIAL, TRANSPORT, SERVICES, SANITARY}
+
+    tSectorData = record {Structure to represent a sector’s data}
+        sector: tSectorType; {Type of sector}
+        currentConsumption: real; {Consumption in kW }
+    end record
+
+    tGridNode = record {Structure to represent a node info}
+        nodeName: string; {Name of the node}
+        {Vector of sectors within the node}
+        sectorList: vector[SECTORS_PER_NODE] of tSectorData;
+    end record
+end type
+
+{Exercise 1}
+function sumConsumption(node: tGridNode): real
+    var
+        sum: real;
+        i: integer;
+    end var
+
+    sum := 0.0;
+
+    for i := 1 to SECTORS_PER_NODE do
+        sum := sum + node.sectorList[i].currentConsumption;
+    end for
+
+    return sum;
+end function
+
+{Exercise 2}
+function avgConsumption(node: tGridNode): real
+    return sumConsumption(node) / SECTORS_PER_NODE;
+end function
+
+{Exercise 3}
+function isOverloaded(node: tGridNode): boolean
+    var
+        i: integer;
+    end var
+
+    {Condition 1: total consumption above 500 kW}
+    if sumConsumption(node) > OVERLOAD_TOTAL_THRESHOLD then
+        return true;
+    end if
+
+    {Condition 2: any sector above 150 kW}
+    for i := 1 to SECTORS_PER_NODE do
+        if node.sectorList[i].currentConsumption > OVERLOAD_SECTOR_THRESHOLD then
+            return true;
+        end if
+    end for
+
+    return false;
+end function
+
+{Exercise 4}
+function consumptionPerSector(node: tGridNode, sector: tSectorType): real
+    var
+        i: integer;
+    end var
+
+    for i := 1 to SECTORS_PER_NODE do
+        if node.sectorList[i].sector = sector then
+            return node.sectorList[i].currentConsumption;
+        end if
+    end for
+
+    return 0.0;
+end function
+
+{Exercise 7}
+function getSectorName(sector: tSectorType): string
+    switch sector
+        case sector = INDUSTRY then
+            return "INDUSTRY";
+        end case
+        case sector = RESIDENTIAL then
+            return "RESIDENTIAL";
+        end case
+        case sector = TRANSPORT then
+            return "TRANSPORT";
+        end case
+        case sector = SERVICES then
+            return "SERVICES";
+        end case
+        case sector = SANITARY then
+            return "SANITARY";
+        end case
+        case default then
+            return "UNKNOWN";
+        end case
+    end switch
+end function
+
+algorithm UOCSmartGridManagement
+    var
+        nodes: vector[MAX_NODES] of tGridNode; {Array for nodes data}
+        nodeCount: integer; {Number of loaded nodes}
+        isRead: boolean; {Result of reading}
+        i: integer;
+        filename: string; {Name of file to read}
+        sectorInput: integer; {User input for sector validation}
+        sector: tSectorType; {Selected sector (validated)}
+        totalSectorConsumption: real; {Total consumption of selected sector across all nodes}
+        avgCons: real; {Average consumption for a node}
+        overloaded: boolean; {Overload status for a node}
+    end var
+
+    {Load data from file}
+    writeString("--- SMART GRID MANAGEMENT SYSTEM (PR2) ---");
+    writeString("LOAD DATA FROM FILE. ENTER FILE NAME >>");
+    filename := readString();
+    loadGridDataFromFile(filename, nodes, nodeCount, isRead);
+
+    if isRead then {Data successfully loaded}
+        {Exercise 5}
+        {Read type of sector with validation}
+        do
+            writeString("SELECT SECTOR (1-INDUSTRY, 2-RESIDENTIAL, 3-TRANSPORT, 4-SERVICES, 5-SANITARY)");
+            writeString(">>");
+            sectorInput := readInteger();
+        while (sectorInput < 1) or (sectorInput > SECTORS_PER_NODE);
+
+        sector := sectorInput; {Cast from integer to tSectorType}
+
+        {Data processing and output}
+        {Exercise 6}
+        writeString("NODE_NAME AVG_CONS OVERLOADED (1-TRUE, 0-FALSE)");
+        writeString("-----------------------------------------------");
+
+        totalSectorConsumption := 0.0;
+
+        for i := 1 to nodeCount do
+            {Calculate average and overload status}
+            avgCons := avgConsumption(nodes[i]);
+            overloaded := isOverloaded(nodes[i]);
+
+            {Accumulate total consumption for the selected sector}
+            totalSectorConsumption := totalSectorConsumption + consumptionPerSector(nodes[i], sector);
+
+            {Print node results}
+            writeString(nodes[i].nodeName);
+            writeString(" ");
+            writeReal(avgCons);
+            writeString(" ");
+            if overloaded then
+                writeInteger(1);
+            else
+                writeInteger(0);
+            end if
+        end for
+
+        {Print total consumption sector}
+        {Exercise 7}
+        writeString("Total consumption sector ");
+        writeString(getSectorName(sector));
+        writeString(" = ");
+        writeReal(totalSectorConsumption);
+        writeString(" kW");
+    else
+        writeString("UNABLE TO LOAD GRID DATA");
+    end if
+end algorithm

@@ -1,0 +1,86 @@
+EJEMPLO 1
+
+{Define the function factorial}
+function factorial(n: integer): integer
+    var
+        fact: integer;
+        i: integer;
+    end var
+
+    fact := 1;
+    i := 1;
+
+    while i ≤ n do
+        fact := fact * i;
+        i := i + 1;
+    end while
+
+    return fact;
+end function
+
+{Define the algorithm that calls the function factorial}
+algorithm combinations
+    var
+        totalNumColors, colorsToCombine: integer;
+        result: integer;
+    end var
+
+    {Read the numbers}
+    totalNumColors := readInteger();
+    colorsToCombine := readInteger();
+
+    {Calculate the combinations of n over m, calling the function factorial 3 different times}
+    result := factorial(totalNumColors)
+              div (factorial(colorsToCombine) * factorial(totalNumColors - colorsToCombine));
+
+    writeInteger(result);
+end algorithm
+
+EJEMPLO 2
+
+const
+    MAX_ELEMS: integer = 3;
+end const
+
+{Define the function sumIntegerVector}
+function sumIntegerVector(v: vector[MAX_ELEMS] of integer): integer
+    var
+        sum: integer;
+        i: integer;
+    end var
+
+    sum := 0;
+    i := 1;
+
+    while i ≤ MAX_ELEMS do
+        sum := sum + v[i];
+        i := i + 1;
+    end while
+
+    return sum;
+end function
+
+{Define the algorithm that calls the sum function}
+algorithm sumVectorFunction
+    var
+        integerVector: vector[MAX_ELEMS] of integer;
+        i: integer;
+        sum: integer;
+    end var
+
+    sum := 0;
+
+    {Read the values}
+    for i := 1 to MAX_ELEMS do
+        writeString("Introduce ");
+        writeInteger(i);
+        writeString("-position integer: ");
+        integerVector[i] := readInteger();
+    done
+
+    {Calculate the sum of the vector elements}
+    sum := sumIntegerVector(integerVector);
+
+    writeString("The sum is: ");
+    writeInteger(sum);
+end algorithm
