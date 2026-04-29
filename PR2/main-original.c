@@ -1,8 +1,8 @@
 /*
-* Author: Diego Bonati Larre
-* Date: 28-04-2026
-* Description: PR2 - Fundamentos de Programacion 
-* A program that analyzes and processes electrical consumption data for a smart grid.
+* File: main.c
+* Author: UOC
+* Course: 20252
+* Description: PR2 - Smart Grid Management
 */
 
 /* System header files */
@@ -16,8 +16,7 @@
 #define MAX_NAME_LENGTH 25+1
 #define SECTORS_PER_NODE 5        /* Number of sectors per node */
 #define MAX_NODES 20              /* Maximum number of nodes */
-#define OVERLOAD_TOTAL_THRESHOLD 500.0f  /* Maximum allowed total consumption (kW) */
-#define OVERLOAD_SECTOR_THRESHOLD 150.0f /* Critical consumption per sector (kW) */
+/* ... */
 
 /* User defined types */
 
@@ -36,10 +35,7 @@ typedef struct {    /* Structure to represent a node info */
 
 /* Predeclaration of actions and functions */
 void loadGridDataFromFile(const char* filename, tGridNode nodes[], int* nodeCount, bool* isRead);
-float sumConsumption(tGridNode node);
-float avgConsumption(tGridNode node);
-bool isOverloaded(tGridNode node);
-float consumptionPerSector(tGridNode node, tSectorType sector);
+/* ... */
 char* getSectorName(tSectorType sector);
 
 /* Main function */
@@ -49,13 +45,11 @@ int main(int argc, char **argv) {
     int i;
     int nodeCount;                 /* Number of loaded node */
     char filename[MAX_FILE_NAME];  /* Nmae of file to read */
-    tSectorType sector;            /* Sector selected by the user - Exercise 5 */
-    int sectorInput;               /* Raw user input for sector (validation) - Exercise 5 */
-    float totalSectorConsumption;  /* Total consumption of selected sector (all nodes) - Exercise 6/7 */
-    float avgCons;                 /* Average consumption per node - Exercise 6 */
-    bool overloaded;               /* Overload status per node - Exercise 6 */
+    /* ... */
 
     /* Load data from file */
+    printf("--- SMART GRID MANAGEMENT SYSTEM (PR2) ---\n");
+    printf("LOAD DATA FROM FILE. ENTER FILE NAME >>\n");
     scanf("%s", filename);  
     
     loadGridDataFromFile(filename, nodes, &nodeCount, &isRead);  
@@ -63,33 +57,23 @@ int main(int argc, char **argv) {
     if (isRead) {   /* Data successfully loaded */
             /* Exercise 5 */
             /* Read type of sector with validation */
-            do {
-                scanf("%d", &sectorInput);
-                if (sectorInput < INDUSTRY || sectorInput > SANITARY) {
-                    printf("INVALID DATA, TRY AGAIN!\n");
-                }
-            } while (sectorInput < INDUSTRY || sectorInput > SANITARY);
-
-            sector = (tSectorType)sectorInput;
+            /* ... */
             
             /* Exercise 6 */
             /* Data processing and output */
 
             printf("NODE_NAME AVG_CONS OVERLOADED (1-TRUE, 0-FALSE)\n");
-            printf("-----------------------------------------------\n");
-            totalSectorConsumption = 0.0f;
+            printf("-----------------------------\n");
             for (i = 0; i < nodeCount; i++) {
                 /* Calculate average, overload and sector consumption */
-                avgCons = avgConsumption(nodes[i]);
-                overloaded = isOverloaded(nodes[i]);
-                totalSectorConsumption += consumptionPerSector(nodes[i], sector);
+                /* ... */
 
                 /* Print node results */
-                printf("%s %.2f %d\n", nodes[i].nodeName, avgCons, overloaded ? 1 : 0);
+                /* ... */
             }
-          
+            /* Print total consumption sector */
             /* Exercise 7 */
-            printf("\nTotal consumption sector %s = %.2f kW\n", getSectorName(sector), totalSectorConsumption);
+            // printf("\nTotal consumption sector %s = %.2f kW\n", getSectorName(sector), ...);
             
     } else {
         printf("UNABLE TO LOAD GRID DATA\n");   
@@ -101,68 +85,26 @@ int main(int argc, char **argv) {
 /* Implementation of actions and functions */
 
 /* Exercise 1 */
-float sumConsumption(tGridNode node) {
-    float sum = 0.0f;
-    int i;
-
-    for (i = 0; i < SECTORS_PER_NODE; i++) {
-        sum += node.sectorList[i].currentConsumption; 
-    }
-
-    return sum;
-}
+/* ... */
 
 /* Exercise 2 */
-float avgConsumption(tGridNode node) {
-    return sumConsumption(node) / SECTORS_PER_NODE;
-}
+/* ... */
 
 /* Exercise 3 */
-bool isOverloaded(tGridNode node) {
-    int i;
-
-    if (sumConsumption(node) > OVERLOAD_TOTAL_THRESHOLD) {
-        return true;
-    }
-
-    for (i = 0; i < SECTORS_PER_NODE; i++) {
-        if (node.sectorList[i].currentConsumption > OVERLOAD_SECTOR_THRESHOLD) {
-            return true;
-        }
-    }
-
-    return false;
-}
+/* ... */
 
 /* Exercise 4 */
-float consumptionPerSector(tGridNode node, tSectorType sector) {
-    int i;
-
-    for (i = 0; i < SECTORS_PER_NODE; i++) {
-        if (node.sectorList[i].sector == sector) {
-            return node.sectorList[i].currentConsumption;
-        }
-    }
-
-    return 0.0f;
-}
+/* ... */
 
 /* Exercise 7 */
 char* getSectorName(tSectorType sector){
-    switch (sector) {
-        case INDUSTRY:
-            return "INDUSTRY";
-        case RESIDENTIAL:
-            return "RESIDENTIAL";
-        case TRANSPORT:
-            return "TRANSPORT";
-        case SERVICES:
-            return "SERVICES";
-        case SANITARY:
-            return "SANITARY";
-        default:
-            return "UNKNOWN";
-    }
+    char* sectorName;
+    
+    /* ... */
+    sectorName = "INDUSTRY";
+    /* ... */
+    
+    return sectorName;
 }
 
 /* Predefined: File loading */

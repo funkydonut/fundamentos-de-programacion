@@ -120,8 +120,6 @@ algorithm UOCSmartGridManagement
     end var
 
     {Load data from file}
-    writeString("--- SMART GRID MANAGEMENT SYSTEM (PR2) ---");
-    writeString("LOAD DATA FROM FILE. ENTER FILE NAME >>");
     filename := readString();
     loadGridDataFromFile(filename, nodes, nodeCount, isRead);
 
@@ -129,9 +127,10 @@ algorithm UOCSmartGridManagement
         {Exercise 5}
         {Read type of sector with validation}
         do
-            writeString("SELECT SECTOR (1-INDUSTRY, 2-RESIDENTIAL, 3-TRANSPORT, 4-SERVICES, 5-SANITARY)");
-            writeString(">>");
             sectorInput := readInteger();
+            if (sectorInput < 1) or (sectorInput > SECTORS_PER_NODE) then
+                writeString("INVALID DATA, TRY AGAIN!");
+            end if
         while (sectorInput < 1) or (sectorInput > SECTORS_PER_NODE);
 
         sector := sectorInput; {Cast from integer to tSectorType}
@@ -165,6 +164,7 @@ algorithm UOCSmartGridManagement
 
         {Print total consumption sector}
         {Exercise 7}
+        writeString("");
         writeString("Total consumption sector ");
         writeString(getSectorName(sector));
         writeString(" = ");

@@ -1,0 +1,51 @@
+Guion video PR2 (corto, ~2 minutos)
+
+- Hola.
+- En este video explico lo que mas me costo entender del codigo “base” que ya venia dado.
+- No tanto las funciones de ejercicios.
+- Sino la estructura global del programa.
+
+- 1) Estructura global: del `main` a los datos cargados
+- Al principio me perdia porque parecia que `main` no tenia datos.
+- La clave es que los datos se cargan “por fuera” con una funcion `void`.
+- Fragmento real de `main.c`:
+        `printf("--- SMART GRID MANAGEMENT SYSTEM (PR2) ---\\n");`
+        `printf("LOAD DATA FROM FILE. ENTER FILE NAME >>\\n");`
+        `scanf("%s", filename);`
+        `loadGridDataFromFile(filename, nodes, &nodeCount, &isRead);`
+        `if (isRead) {`
+        `    ...`
+        `} else {`
+        `    printf("UNABLE TO LOAD GRID DATA\\n");`
+        `}`
+
+- Lo que me costaba era entender que `loadGridDataFromFile` modifica variables del `main`.
+- No devuelve nada “con return”, pero rellena `nodes` y escribe `nodeCount` e `isRead`.
+
+- 2) El “truco” mental: punteros como salida (`&`)
+- `nodes` se rellena dentro de la funcion.
+- `&nodeCount` y `&isRead` son direcciones para poder modificar esas variables desde dentro.
+- Fragmento real de `loadGridDataFromFile`:
+
+        `*nodeCount = 0;`
+        `nodes[*nodeCount] = newNode;`
+        `(*nodeCount)++;`
+        `*isRead = true;`
+
+- Problema tipico al entenderlo mal:
+- pensar que `nodeCount` ya tiene valor.
+- y entonces el bucle de nodos no imprime nada.
+
+- 3) Validacion del sector: por que se usa `do-while`
+- Lo segundo que me costaba era ver por que no vale un `if`.
+- Se repite la pregunta hasta que el usuario escribe un valor valido.
+- Fragmento real de `main.c`:
+        `do {`
+        `    printf("ENTER SECTOR (1-INDUSTRY, 2-RESIDENTIAL, 3-TRANSPORT, 4-SERVICES, 5-SANITARY) >>\\n");`
+        `    scanf("%d", &sectorInput);`
+        `} while (sectorInput < INDUSTRY || sectorInput > SANITARY);`
+
+- Referencia breve al Ejercicio 6 (por que es mas complejo)
+- El Ejercicio 6 es mas complejo porque es donde todo se conecta.
+- Con el bucle `for` ya dependes de que `nodeCount` y `sector` esten bien.
+- Y por cada nodo llamas a varias funciones y a la vez acumulas el total del sector.
