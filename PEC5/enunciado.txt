@@ -1,0 +1,141 @@
+================================================================================
+  FUNDAMENTOS DE PROGRAMACIÓN
+  PEC5 — 20252
+  [ES] Enunciado
+================================================================================
+
+
+OBJETIVO
+--------
+
+Implemente un programa en C que compare dos pedidos de pizza de diferentes
+establecimientos e indique cuál es la mejor opción.
+
+  • El programa solo comparará los pedidos si el nombre de la pizza es el mismo.
+    En caso contrario, mostrará "NON-COMPARABLE ORDERS" y el programa finalizará.
+
+  • Para gestionar los datos, utilizaremos una tupla que contendrá la descripción
+    (nombre de la pizza), precio base, descuento, distancia y precio final.
+
+  • La mejor oferta será la que tenga el precio final más bajo. En caso de empate,
+    se escogerá la que tenga el precio base más bajo. Si el empate persiste, se
+    elegirá el segundo pedido introducido por teclado.
+
+
+ENTRADA DE DATOS
+----------------
+
+El programa leerá desde teclado los datos del primer pedido y, a continuación,
+los datos del segundo. Para cada pedido se solicitará:
+
+  • La descripción: el máximo de caracteres permitidos será 50.
+
+  • El precio base: un valor que puede contener decimales.
+
+  • El descuento: un valor entero comprendido entre 0 y 10. Si el pedido no tiene
+    descuento, el valor será 0. Es un valor absoluto, no un porcentaje.
+
+  • La distancia en km: un valor que puede contener decimales.
+
+La entrada de datos debe realizarse utilizando una acción que tenga como parámetro
+de salida una tupla pedido.
+
+Una vez leídos los datos de un pedido, se utilizará una acción para calcular su
+precio final. Esta acción recibirá una tupla pedido como parámetro de entrada/salida
+y actualizará un campo adicional de dicha tupla que contendrá el precio final,
+basándose en las siguientes operaciones:
+
+  1. Aplicar el descuento asociado al pedido sobre el precio base.
+
+  2. Añadir los gastos de envío según la distancia:
+        – Si la distancia es menor de 5 km, se suman 2 €.
+        – Si la distancia es igual o mayor de 5 km, se suman 5 €.
+
+  3. El precio final será:
+
+        precio final = precio base − descuento + gastos de envío
+
+
+SALIDA DE DATOS
+---------------
+
+El programa mostrará por pantalla todos los datos del pedido con la mejor oferta.
+La salida de datos debe realizarse utilizando una acción que tenga como parámetro
+de entrada una tupla pedido.
+
+Para realizar la comparación entre ambos pedidos, se utilizará una acción con tres
+parámetros, todos de tipo tupla pedido: dos de entrada, correspondientes a los dos
+pedidos a comparar, y uno de salida, que contendrá los datos del pedido con la
+mejor oferta.
+
+Es obligatorio que los datos de cada pedido se guarden en variables de tipo de
+datos estructurados (tupla). Además, también deben utilizarse las acciones descritas.
+
+Finalmente, es necesario que el programa esté modularizado en 3 archivos:
+
+        main.c    order.c    order.h
+
+
+EJEMPLO DE EJECUCIÓN
+--------------------
+
+En el anexo del final de este documento podéis consultar un ejemplo de ejecución
+del programa en lenguaje C: revisadlo para utilizar los literales exactos para
+resolver el ejercicio. Tened en cuenta que la corrección se hace de manera automática.
+
+
+================================================================================
+  [CAT] Annex  ·  [ES] Anexo
+================================================================================
+
+
+────────────────────────────────────────────────────────────────────────────────
+  Cas 1. / Caso 1.
+────────────────────────────────────────────────────────────────────────────────
+
+INPUT
+
+  ORDER 1
+    DESCRIPTION?   BBQ_Chicken_Pizza
+    BASE PRICE?      12.5
+    DISCOUNT?         0
+    DISTANCE?         1.2
+
+  ORDER 2
+    DESCRIPTION?   BBQ_Chicken_Pizza
+    BASE PRICE?      14.0
+    DISCOUNT?         5
+    DISTANCE?         6.0
+
+OUTPUT
+
+  THE BEST OFFER IS:
+    DESCRIPTION:  BBQ_Chicken_Pizza
+    BASE PRICE:   14.00
+    DISCOUNT:     5
+    DISTANCE:     6.00
+    FINAL PRICE:  14.00
+
+
+────────────────────────────────────────────────────────────────────────────────
+  Cas 2. / Caso 2.
+────────────────────────────────────────────────────────────────────────────────
+
+INPUT
+
+  ORDER 1
+    DESCRIPTION?   BBQ_Chicken_Pizza
+    BASE PRICE?      5
+                     12.5
+    DISCOUNT?         0
+    DISTANCE?         1.2
+
+  ORDER 2
+    DESCRIPTION?   Four_Cheese_Pizza
+    BASE PRICE?      13.60
+    DISCOUNT?         3
+    DISTANCE?         5.5
+
+OUTPUT
+
+  NON-COMPARABLE ORDERS
