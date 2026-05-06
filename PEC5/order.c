@@ -2,27 +2,16 @@
 #include <stdio.h>
 
 void read_order(Order *out) {
-    /*
-     * Read the pizza name with scanf. Leading whitespace in the format
-     * skips the newline left in stdin after the previous order's last number.
-     */
-    printf("DESCRIPTION?\n");
     scanf(" %50s", out->description);
-
-    printf("BASE PRICE?\n");
     scanf("%f", &out->base_price);
-
-    printf("DISCOUNT?\n");
     scanf("%d", &out->discount);
-
-    printf("DISTANCE?\n");
     scanf("%f", &out->distance_km);
 }
 
 void calculate_final_price(Order *in_out) {
     float shipping_fee;
 
-    /* Spec: if distance < 5 km add 2 €; otherwise add 5 €. */
+    /* If distance < 5 km add 2 €; otherwise add 5 €. */
     if (in_out->distance_km < DISTANCE_THRESHOLD_KM) {
         shipping_fee = SHIPPING_FEE_NEAR;
     } else {
