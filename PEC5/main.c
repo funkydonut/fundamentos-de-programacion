@@ -7,6 +7,7 @@
 
 #include "order.h"
 #include <stdio.h>
+#include <string.h>
 
 int main() {
     /* Structured variables: each order must be stored in a tuple (struct). */
@@ -21,19 +22,14 @@ int main() {
     calculate_final_price(&order2);
 
     /*
-     * Compare descriptions: advance while characters match and
-     * the first string has not ended. Then both must be '\0' at the same index
-     * for the names to be equal (same length and same content).
+     * Compare descriptions using strcmp (<string.h>).
+     * A for/while loop would be the manual alternative, but both are forbidden
+     * by the test constraints, so strcmp is used instead.
      */
-    {
-        int i = 0;
-        while (order1.description[i] != '\0' && order1.description[i] == order2.description[i]) {
-            i++;
-        }
-        if (order1.description[i] != '\0' || order2.description[i] != '\0') {
-            printf("NON-COMPARABLE ORDERS\n");
-            return 0;
-        }
+    if (strcmp(order1.description, order2.description) != 0) {
+        printf("OUTPUT\n");
+        printf("NON-COMPARABLE ORDERS\n");
+        return 0;
     }
 
     /* Same pizza: pick the best offer via an action with two inputs and one output. */
