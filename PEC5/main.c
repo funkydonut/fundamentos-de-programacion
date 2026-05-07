@@ -24,7 +24,7 @@ int main() {
     /*
      * Compare descriptions using strcmp (<string.h>).
      * A for/while loop would be the manual alternative, but both are forbidden
-     * by the test constraints, so strcmp is used instead.
+     * by the test constraints, so strcmp is used instead. 
      */
     if (strcmp(order1.description, order2.description) != 0) {
         printf("OUTPUT\n");
