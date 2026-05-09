@@ -1,11 +1,11 @@
 #include "order.h"
 #include <stdio.h>
 
-void read_order(Order *out) {
-    scanf(" %50s", out->description);
-    scanf("%f", &out->base_price);
-    scanf("%d", &out->discount);
-    scanf("%f", &out->distance_km);
+void read_order(Order *order_to_fill) {
+    scanf(" %50s", order_to_fill->description);
+    scanf("%f", &order_to_fill->base_price);
+    scanf("%d", &order_to_fill->discount);
+    scanf("%f", &order_to_fill->distance_km);
 }
 
 void calculate_final_price(Order *in_out) {
@@ -27,6 +27,7 @@ void calculate_final_price(Order *in_out) {
 }
 
 void print_order(const Order *in) {
+    printf("OUTPUT\n");
     printf("THE BEST OFFER IS:\n");
     printf("DESCRIPTION: %s\n", in->description);
     printf("BASE PRICE: %.2f\n", in->base_price);

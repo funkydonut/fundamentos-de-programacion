@@ -1,0 +1,15 @@
+─────────────────────────────
+feedback 1:
+
+Hola Diego,
+
+En la función `isOverloaded` utilizas múltiples sentencias `return` (esto **no está permitido** en Fundamentos de Programación). 
+- Deberías implementar **un único punto de salida**, utilizando un bucle `while` con condición compuesta y una variable de tipo **flag** (por ejemplo, `criticalOverload`).
+- Además, la función `isOverloaded` puede resolverse **en una sola pasada** sobre el vector, en vez de llamar primero a `sumConsumption` y después recorrer el vector con un `for`.
+
+─────────────────────────────
+feedback 2:
+
+En la función `isOverloaded` has utilizado **múltiples retornos** (`return`). Esta práctica **no está permitida** en esta asignatura y **se penaliza con un 0 en toda la entrega**.
+
+─────────────────────────────

@@ -16,10 +16,11 @@ typedef struct {
 } Order;
 
 /*
- * Reads one full order from stdin and writes it into the tuple pointed to by out.
- * Output parameter: only *out is modified (the order read).
+ * Reads one full order from stdin and writes it into the tuple pointed to by
+ * order_to_fill.
+ * Output parameter: only *order_to_fill is modified (the order read).
  */
-void read_order(Order *out);
+void read_order(Order *order_to_fill);
 
 /*
  * Computes and updates the final_price field of the order (input/output parameter).
