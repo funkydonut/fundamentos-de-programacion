@@ -165,6 +165,42 @@ void fillTable(tTheater *movieTheater) {
     }
 }
 
+/*
+ * EJEMPLO PRÁCTICO de fillTable:
+ * ─────────────────────────────────────────────────────────────
+ * Supón un cine con 3 salas. El usuario introduce por teclado:
+ *   150.50 200.00 75.25 -1.0
+ *
+ * Ejecución paso a paso:
+ *
+ *   Estado inicial:
+ *     numTheaters = 0
+ *     collect = [ ?, ?, ?, ... ]
+ *     Se lee temp = 150.50
+ *
+ *   Iteración 1 (temp=150.50, no es -1 → entra al while):
+ *     collect[0] = 150.50
+ *     numTheaters = 1
+ *     Se lee temp = 200.00
+ *
+ *   Iteración 2 (temp=200.00, no es -1 → sigue):
+ *     collect[1] = 200.00
+ *     numTheaters = 2
+ *     Se lee temp = 75.25
+ *
+ *   Iteración 3 (temp=75.25, no es -1 → sigue):
+ *     collect[2] = 75.25
+ *     numTheaters = 3
+ *     Se lee temp = -1.0
+ *
+ *   Comprobación while (temp == -1.0 → SALE del bucle)
+ *
+ *   Resultado final:
+ *     numTheaters = 3
+ *     collect = [ 150.50, 200.00, 75.25, (resto sin usar) ]
+ * ─────────────────────────────────────────────────────────────
+ */
+
 
 /* ============================================================
  * EJEMPLO 06: Recorrido de una tabla (actualización).
@@ -337,6 +373,48 @@ int main () {
     return 0;
 }
 
+/*
+ * EJEMPLO PRÁCTICO de searchValue (Ejemplo 08):
+ * ─────────────────────────────────────────────────────────────
+ * Supón que fillTable ha cargado estas recaudaciones:
+ *   collect = [ 50.0, 80.0, 120.0, 45.0 ]
+ *   numTheaters = 4
+ *
+ * El usuario quiere buscar si alguna sala recaudó >= 100.0
+ *   → value = 100.0
+ *
+ * Ejecución paso a paso de searchValue:
+ *
+ *   Inicio:
+ *     i = 0, found = false, *position = -1
+ *
+ *   Iteración 1 (i=0):
+ *     collect[0] = 50.0 → 50.0 >= 100.0? NO → i++ → i = 1
+ *
+ *   Iteración 2 (i=1):
+ *     collect[1] = 80.0 → 80.0 >= 100.0? NO → i++ → i = 2
+ *
+ *   Iteración 3 (i=2):
+ *     collect[2] = 120.0 → 120.0 >= 100.0? SÍ → found = true
+ *     (no incrementa i, sale del while)
+ *
+ *   found es true → *position = 2
+ *   Resultado: position = 2 (la sala de índice 2, es decir la tercera)
+ *
+ * ─────────────────────────────────────────────────────────────
+ * Si en cambio buscamos value = 200.0 (ninguna sala llega):
+ *
+ *   Iteración 1 (i=0): 50.0 >= 200.0? NO → i = 1
+ *   Iteración 2 (i=1): 80.0 >= 200.0? NO → i = 2
+ *   Iteración 3 (i=2): 120.0 >= 200.0? NO → i = 3
+ *   Iteración 4 (i=3): 45.0 >= 200.0? NO → i = 4
+ *   i = 4 == numTheaters → SALE del while
+ *
+ *   found sigue false → *position queda en -1
+ *   Resultado: position = -1 (no encontrado)
+ * ─────────────────────────────────────────────────────────────
+ */
+
 
 /* ============================================================
  * EJEMPLO 09: Inserción ordenada en una tabla.
@@ -406,6 +484,131 @@ int main () {
 
     return 0;
 }
+
+/*
+ * EJEMPLO PRÁCTICO de fillTable con inserción ordenada (Ejemplo 09):
+ * ─────────────────────────────────────────────────────────────
+ * Supón que el usuario introduce por teclado: 80.0 30.0 120.0 50.0 -1.0
+ *
+ * La función tiene 3 fases por cada número que lee:
+ *   FASE 1 – Buscar la posición correcta (líneas 450-458)
+ *   FASE 2 – Desplazar elementos a la derecha (líneas 462-466)
+ *   FASE 3 – Insertar el nuevo valor (líneas 469-470)
+ *
+ *
+ * ═══════════════════════════════════════════════════════════
+ * INSERCIÓN DE temp = 80.0 (tabla vacía, numTheaters = 0)
+ * ═══════════════════════════════════════════════════════════
+ *
+ * FASE 1 – Buscar posición:
+ *   Se ejecuta (línea 450): i = 0, found = false
+ *   El while interno (línea 453):
+ *     while (i < 0 && !found) → 0 < 0 es false → NO ENTRA
+ *   Resultado: i = 0 (se insertará en la posición 0)
+ *
+ * FASE 2 – Desplazar:
+ *   El if (línea 462): numTheaters > 0? → 0 > 0 es false → NO ENTRA
+ *   No hay nada que mover porque la tabla está vacía.
+ *
+ * FASE 3 – Insertar:
+ *   (línea 469): collect[0] = 80.0
+ *   (línea 470): numTheaters = 0 + 1 = 1
+ *
+ *   Tabla: [ 80.0 ]
+ *
+ *
+ * ═══════════════════════════════════════════════════════════
+ * INSERCIÓN DE temp = 30.0 (numTheaters = 1)
+ * ═══════════════════════════════════════════════════════════
+ *
+ * FASE 1 – Buscar posición:
+ *   Se ejecuta (línea 450): i = 0, found = false
+ *   El while interno (línea 453):
+ *     while (0 < 1 && !false) → true → ENTRA
+ *       (línea 454): collect[0]=80.0 <= 30.0? → NO
+ *       (línea 457): found = true → sale del while
+ *   Resultado: i = 0 (el 30.0 va ANTES del 80.0)
+ *
+ * FASE 2 – Desplazar:
+ *   El if (línea 462): 1 > 0? → SÍ → entra al for
+ *   El for (línea 463): j arranca en numTheaters=1, baja hasta i=0
+ *     j=1: collect[1] = collect[0] → collect[1] = 80.0
+ *   Ahora la tabla tiene:  [ 80.0, 80.0 ]  (la pos 0 se va a sobrescribir)
+ *
+ * FASE 3 – Insertar:
+ *   (línea 469): collect[0] = 30.0
+ *   (línea 470): numTheaters = 1 + 1 = 2
+ *
+ *   Tabla: [ 30.0, 80.0 ]
+ *
+ *
+ * ═══════════════════════════════════════════════════════════
+ * INSERCIÓN DE temp = 120.0 (numTheaters = 2)
+ * ═══════════════════════════════════════════════════════════
+ *
+ * FASE 1 – Buscar posición:
+ *   Se ejecuta (línea 450): i = 0, found = false
+ *   El while interno (línea 453):
+ *     i=0: while (0 < 2 && !false) → true → ENTRA
+ *       (línea 454): collect[0]=30.0 <= 120.0? → SÍ → i++ → i=1
+ *     i=1: while (1 < 2 && !false) → true → ENTRA
+ *       (línea 454): collect[1]=80.0 <= 120.0? → SÍ → i++ → i=2
+ *     i=2: while (2 < 2 && ...) → false → SALE (no encontró ninguno mayor)
+ *   Resultado: i = 2 (el 120.0 va AL FINAL, después del 80.0)
+ *
+ * FASE 2 – Desplazar:
+ *   El if (línea 462): 2 > 0? → SÍ → entra al for
+ *   El for (línea 463): j arranca en 2, condición j >= i → 2 >= 2 → ENTRA
+ *     j=2: collect[2] = collect[1] → collect[2] = 80.0
+ *     j=1: 1 >= 2? → NO → SALE del for
+ *   Pero como i=2, collect[2] se va a sobrescribir de todos modos.
+ *
+ * FASE 3 – Insertar:
+ *   (línea 469): collect[2] = 120.0
+ *   (línea 470): numTheaters = 2 + 1 = 3
+ *
+ *   Tabla: [ 30.0, 80.0, 120.0 ]
+ *
+ *
+ * ═══════════════════════════════════════════════════════════
+ * INSERCIÓN DE temp = 50.0 (numTheaters = 3)
+ * ═══════════════════════════════════════════════════════════
+ *
+ * FASE 1 – Buscar posición:
+ *   Se ejecuta (línea 450): i = 0, found = false
+ *   El while interno (línea 453):
+ *     i=0: while (0 < 3 && !false) → true → ENTRA
+ *       (línea 454): collect[0]=30.0 <= 50.0? → SÍ → i++ → i=1
+ *     i=1: while (1 < 3 && !false) → true → ENTRA
+ *       (línea 454): collect[1]=80.0 <= 50.0? → NO
+ *       (línea 457): found = true → SALE del while
+ *   Resultado: i = 1 (el 50.0 va entre el 30.0 y el 80.0)
+ *
+ * FASE 2 – Desplazar:
+ *   El if (línea 462): 3 > 0? → SÍ → entra al for
+ *   El for (línea 463): j arranca en numTheaters=3, baja hasta i=1
+ *     j=3: collect[3] = collect[2] → collect[3] = 120.0
+ *     j=2: collect[2] = collect[1] → collect[2] = 80.0
+ *     j=1: 1 >= 1 → ENTRA: collect[1] = collect[0] → collect[1] = 30.0
+ *     j=0: 0 >= 1? → NO → SALE del for
+ *   Tabla intermedia: [ 30.0, 30.0, 80.0, 120.0 ] (pos 1 se sobrescribirá)
+ *
+ * FASE 3 – Insertar:
+ *   (línea 469): collect[1] = 50.0
+ *   (línea 470): numTheaters = 3 + 1 = 4
+ *
+ *   Tabla: [ 30.0, 50.0, 80.0, 120.0 ]
+ *
+ *
+ * ═══════════════════════════════════════════════════════════
+ * Se lee temp = -1.0 → la condición del while principal
+ * (línea 449): temp != END_SEQ → -1.0 != -1.0 → false → SALE
+ *
+ * RESULTADO FINAL (siempre ordenada de menor a mayor):
+ *   numTheaters = 4
+ *   collect = [ 30.0, 50.0, 80.0, 120.0 ]
+ * ─────────────────────────────────────────────────────────────
+ */
 
 
 /* ============================================================
