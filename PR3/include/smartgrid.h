@@ -7,7 +7,7 @@
 #define SECTORS_PER_NODE 5   // Number of sectors per node
 #define OVERLOAD_TOTAL_THRESHOLD 500.0 // Limit for overload consumption
 #define CRITICAL_SECTOR_LIMIT 150.0    // Limit for security sector consumption
-/* ... */
+#define KW_TO_MW 1000.0 // kW to MW divisor factor to convert consumption to MW
 
 /* User defined types */
 typedef enum {INDUSTRY = 1, RESIDENTIAL, TRANSPORT, SERVICES, SANITARY} tSectorType;
@@ -32,7 +32,11 @@ typedef struct {
 } tGridTable;
 
 /* Prototypes for functions and actions */
-/* ... */
+void getExtremConsForecast(tGridNode *node, float *minNodeConsumption, float *maxNodeConsumption); // Exercise 4: Action to get the extreme consumption forecast
+void writeGridReport(tGridTable *grid, tPowerScale powerScale); // Exercise 3: Action to write the grid report
+float kwToMw(float kw); // Exercise 5: Function to convert kilowatts to megawatts
+void getOverloadedNodes(tGridTable *grid, tGridTable *overloadedGrid); // Exercise 6: Action to filter overloaded nodes into a new table
+void removeInactiveNodes(tGridTable *grid); // Exercise 8: Action to remove inactive nodes from the grid
 
 /* Auxiliar provided action and function */
 void loadGridDataFromFile(const char *fileName, tGridTable *table, bool *isRead);

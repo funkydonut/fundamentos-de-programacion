@@ -16,8 +16,8 @@ int main(int argc, char **argv) {
     bool isRead = false;          // true if data is loaded 
     char filename[MAX_FILE_NAME];
     tPowerScale powerScale; // Power scale selected by the user
-    float minNodeConsumption = 0.0f;
-    float maxNodeConsumption = 0.0f;
+    // float minNodeConsumption = 0.0f;
+    // float maxNodeConsumption = 0.0f;
     int originalNodes = 0;
     
     grid.nNodes = 0;
@@ -71,10 +71,10 @@ int main(int argc, char **argv) {
         /* Exercise 8.1 */
         /* Check if any node was removed */
         if (originalNodes > grid.nNodes) {
-            printf("INACTIVE NODES REMOVED: %d\n", originalNodes - grid.nNodes);
+            printf("\nINACTIVE NODES REMOVED: %d\n", originalNodes - grid.nNodes);
             writeGridReport(&grid, powerScale);
         } else {
-            printf("NO INACTIVE NODES\n");
+            printf("\nNO INACTIVE NODES\n");
         }
 
     } else {
