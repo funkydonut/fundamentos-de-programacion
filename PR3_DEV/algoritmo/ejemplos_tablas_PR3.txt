@@ -1,0 +1,936 @@
+Ejemplo 01
+==========
+
+[Pseudocódigo]
+
+{constant definition}
+const MAX_ELEMENTS: integer = 10;
+end const
+
+{type definition}
+type
+tExampleTable = record
+elements: vector[MAX_ELEMENTS] of integer;
+numElements: integer;
+end record
+end type
+
+algorithm example1
+{var definition using the type}
+var
+aTable: tExampleTable;
+end var
+end algorithm
+
+[C]
+
+`# include
+
+/* constant definition */
+
+define MAX_ELEMENTS 10
+/* type definition */
+typedef struct {
+    int elements[MAX_ELEMENTS];
+    int numElements
+} tExampleTable;
+
+int main () {
+    /* Var definition using the type */
+   tExampleTable aTable;
+}`
+
+Ejemplo 02
+==========
+
+[Pseudocódigo]
+
+{definition of the maximum number of gates}
+const MAX_GATES: integer = 40;
+end const
+
+{definition of the type table}
+type
+tGates = record
+stateGates: vector[MAX_GATES] of boolean;
+numGates: integer;
+end record
+end type
+
+algorithm example2
+{definition of variables for two buildings}
+var
+building1: tGates;
+building2: tGates;
+end var
+end algorithm
+
+[C]
+
+`# include
+
+include
+/* definition of the maximum number of gates */
+
+define MAX_GATES 40
+/* definition of the type table */
+typedef struct {
+    bool stateGates[MAX_GATES];
+    int numGates;
+} tGates;
+
+int main () {
+    /* definition of variables for two
+   buildings */
+   tGates building1;
+   tGates building2;
+}`
+
+Ejemplo 03
+==========
+
+[Pseudocódigo]
+
+const K: integer = 10;
+MAX_GATES: integer = 40;
+end const
+
+type
+tGates = record
+stateGates: vector[MAX_GATES] of boolean;
+numGates: integer;
+end record
+end type
+
+{header of fillTable}
+action fillTable(out Building: tGates);
+
+algorithm checkDoors
+var
+building1: tGates;
+p: integer;
+b: boolean;
+c: boolean;
+end var
+
+c := true;
+fillTable(building1);
+
+{the following statements treat the element of the table as variables}
+{assigns the third element of the table building1 to the variable b}
+b := building1.stateGates;
+
+{assigns the value of the variable c to the Kth gate of building1,
+assuming that K is a constant such that 1 ≤ K≤ 40}
+building1.stateGates[K] := c;
+
+{assigns the value of the first gate of building1 to the gate
+2p +5 as long as 1 ≤ 2p+5 ≤ 40}
+building1.stateGates[2*p+5] := building1.stateGates;
+
+end algorithm
+
+[C]
+
+``# include
+
+include
+define K 10
+define MAX_GATES 40
+typedef struct {
+   bool stateGates[MAX_GATES];
+   int numGates;
+} tGates;
+
+void fillTable (tGates *Building) ;
+
+int main () {
+   tGates building1;
+   int p;
+   bool b;
+   bool c;
+   c = true ;    /* the following statements treat the elements of the table as variables */
+   fillTable(&building1);
+    /* assigns the third element of the table building1 to the variable b */
+   b = building1.stateGates
+;
+    /* assigns the value of the variable c to the kth gate of building1,
+assuming that k is a constant such that 1 ≤ K ≤ 40 */
+   building1.stateGates[K -1] = c;
+    /* assigns the value of the first gate of building1 to the gate
+2p +5 as long as 1 ≤ 2p+5 ≤ 40 */
+   building1.stateGates[ 2 *p+ 5 -1] = building1.stateGates
+;
+   return 0 ;
+}``
+
+Ejemplo 04
+==========
+
+[Pseudocódigo]
+
+const MAX_THEATERS: integer = 20;
+end const
+
+type
+tTheater = record
+collect: vector[MAX_THEATERS] of real;
+numTheaters: integer;
+end record
+end type
+
+algorithm movieTheater
+var
+santalo: tTheater;
+sants: tTheater;
+end var
+
+{table initialitation, setting the number of theater to 0}
+santalo.numTheaters := 0;
+sants.numTheaters := 0;
+end algorithm
+
+[C]
+
+`# include
+
+define MAX_THEATERS 20
+typedef struct {
+    float collect[MAX_THEATERS];
+    int numTheaters;
+} tTheater;
+
+int main () {
+    /var declaration/
+   tTheater santalo;
+   tTheater sants;
+   /* table initialitation, setting the number of theather to 0 */
+   santalo.numTheaters = 0 ;
+   sants.numTheaters = 0 ;
+    return 0 ;
+}`
+
+Ejemplo 05
+==========
+
+[Pseudocódigo]
+
+const MAX_THEATERS: integer = 20;
+END_SEQ: real = -1.0;
+end const
+
+type
+tTheater = record
+collect: vector[MAX_THEATERS] of real;
+numTheaters: integer;
+end record
+end type
+
+action fillTable(out movieTheater: tTheater)
+var
+temp: real;
+end var
+
+{table initialization}
+movieTheater.numTheaters := 0;
+
+temp := readReal(); {read the first number}
+
+{iteration while the read number is not -1}
+while temp ≠ END_SEQ do
+{Save the read number in the table.}
+movieTheater.collect[movieTheater.numTheaters+1] := temp;
+movieTheater.numTheaters := movieTheater.numTheaters + 1;
+temp := readReal();
+end while
+end action
+
+[C]
+
+``# include
+
+define MAX_THEATERS 20
+define END_SEQ -1.0
+typedef struct {
+   float collect[MAX_THEATERS];
+   int numTheaters;
+} tTheater;
+
+void fillTable (tTheater *movieTheater) {
+   /* var definition */
+   float temp;
+   /* table initialization */
+   movieTheater->numTheaters = 0 ;
+    scanf ( "%f" , &temp);   /* read the first number */
+   /* iteration while the read number is not -1 */
+   while (temp != END_SEQ) {
+    /Save the read number in the table/
+   movieTheater->collect[movieTheater->numTheaters] = temp;
+   movieTheater->numTheaters = movieTheater->numTheaters + 1 ;
+    scanf ( "%f" , &temp);
+   }
+}``
+
+Ejemplo 06
+==========
+
+[Pseudocódigo]
+
+const MAX_THEATERS: integer = 20;
+END_SEQ: real = -1.0;
+end const
+
+type
+tTheater = record
+collect: vector[MAX_THEATERS] of real;
+numTheaters: integer;
+end record
+end type
+
+action update(inout movieTheater: tTheater)
+var
+i: integer;
+end var
+
+{iteration. We can use a for ... do iteration because we know the exact number of element of the table}
+for i:=1 to movieTheater.numTheaters do
+movieTheater.collect[i] := movieTheater.collect[i] *1.20;
+end for
+end action
+
+[C]
+
+`# include
+
+define MAX_THEATERS 20
+define END_SEQ -1.0
+typedef struct {
+    float collect[MAX_THEATERS];
+    int numTheaters;
+} tTheater;
+
+void update (tTheater *movieTheater) {
+  /* var definition */
+   int i;
+    /* iteration. We can use a for ... do iteration because we know the exact number of element of the table */
+   for (i = 0 ; i < movieTheater->numTheaters; i++) {
+   movieTheater->collect[i] = movieTheater->collect[i] * 1.20 ;
+   }
+}`
+
+Ejemplo 07
+==========
+
+[Pseudocódigo]
+
+const MAX_THEATERS: integer = 20;
+END_SEQ: real = -1.0;
+end const
+
+type
+tTheater = record
+collect: vector[MAX_THEATERS] of real;
+numTheaters: integer;
+end record
+end type
+
+action fillTable(out movieTheater: tTheater)
+var
+temp: real;
+end var
+
+{table initialization}
+movieTheater.numTheaters := 0;
+temp := readReal(); {we read the first digit}
+
+{iteration while the read number is not -1}
+while temp ≠ END_SEQ do
+{Save the read number in the table}
+movieTheater.numTheaters := movieTheater.numTheaters + 1;
+movieTheater.collect[movieTheater.numTheaters] := temp;
+temp := readReal();
+end while
+end action
+
+action update(inout movieTheater: tTheater)
+var
+i: integer;
+end var
+
+{iteration. We can use a for ... do iteration because we know the exact number of element of the table}
+for i:=1 to movieTheater.numTheaters do
+movieTheater.collect[i] := movieTheater.collect[i] * 1.20;
+end for
+end action
+
+action printTable(in movieTheater: tTheater)
+var
+i: integer;
+end var
+
+{iteration. We can use a for ... do iteration because we know the exact number of element of the table}
+for i:=1 to movieTheater.numTheaters do
+writeReal(movieTheater.collect[i]);
+end for
+end action
+
+algorithm simulation
+var
+santalo: tTheaters;
+end var
+
+fillTable(santalo);
+printTable(santalo);
+update(santalo);
+printTable(santalo);
+end algorithm
+
+[C]
+
+`# include
+
+define MAX_THEATERS 20
+define END_SEQ -1.0
+typedef struct {
+   float collect[MAX_THEATERS];
+    int numTheaters;
+} tTheater;
+
+void fillTable (tTheater *movieTheater) {
+    /* var definition */
+    float temp;
+    /* table initialization */
+   movieTheater->numTheaters = 0 ;
+    scanf ( "%f" , &temp);   /* read the first dígit */
+    /* iteration while the read number is not -1 */
+    while (temp != END_SEQ) {
+    /* Save the read number in the table */
+   movieTheater->collect[movieTheater->numTheaters] = temp;
+   movieTheater->numTheaters = movieTheater->numTheaters + 1 ;
+    scanf ( "%f" , &temp);
+   }
+}
+
+void update (tTheater *movieTheater) {
+    /* var definition */
+    int i;
+    /* iteration. We can use a for ... do iteration because we know the exact number of element of the table */
+    for (i = 0 ; i < movieTheater->numTheaters; i++) {
+   movieTheater->collect[i] = movieTheater->collect[i] * 1.20 ;
+   }
+}
+
+void printTable (tTheater movieTheater) {
+    /* var definition */
+    int i;
+    /* iteration. We can use a for ... do iteration because we know the exact number of element of the table */
+    for (i= 0 ; i< movieTheater.numTheaters; i++) {
+    printf ( "%f " , movieTheater.collect[i]);
+   }
+}
+
+int main () {
+   tTheater santalo;
+   fillTable(&santalo);
+   printTable(santalo);
+   update(&santalo);
+   printTable(santalo);
+    return 0 ;
+}`
+
+Ejemplo 08
+==========
+
+[Pseudocódigo]
+
+const MAX_THEATERS: integer = 20;
+END_SEQ: real = -1.0;
+end const
+
+type
+tTheater = record
+collect: vector[MAX_THEATERS] of real;
+numTheaters: integer;
+end record
+end type
+
+action fillTable(out movieTheater: tTheater)
+var
+temp: real;
+end var
+
+{table initialization}
+movieTheater.numTheaters := 0;
+temp := readReal(); {we read the first digit}
+
+{iteration while the read number is not -1}
+while temp ≠ END_SEQ do
+{Save the read number in the table}
+movieTheater.numTheaters := movieTheater.numTheaters + 1;
+movieTheater.collect[movieTheater.numTheaters] := temp;
+temp := readReal();
+end while
+end action
+
+action searchValue(in movieTheater: tTheater, in value: real, out position: integer)
+var
+i: integer;
+found: boolean;
+end var
+
+{variable initialization. i is set to 1 to start searching in the table at postion 1 and found to false to indicate that so far value has not been found. The out parameter position is set to -1 by default}
+i := 1;
+found := false;
+position := -1;
+
+{iteration while there still are elements in the table and the value has not been found}
+while i ≤ movieTheater.numTheaters and not found do
+if movieTheater.collect[i] ≥ value then
+found := true;
+else
+i := i + 1;
+end if
+end while
+
+if found then
+position := i;
+end if
+end action
+
+algorithm simulation
+var
+movieTheater: tTheaters;
+value: real;
+position: integer;
+end var
+
+fillTable(movieTheater);
+value := readReal();
+searchValue(movieTheater, value, position);
+writeInteger(postion);
+end algorithm
+
+[C]
+
+`# include
+
+include
+define MAX_THEATERS 20
+define END_SEQ -1.0
+typedef struct {
+    float collect[MAX_THEATERS];
+    int numTheaters;
+} tTheater;
+
+void fillTable (tTheater *movieTheater) {
+    /* var definition */
+    float temp;
+     /* table initialization */
+   movieTheater->numTheaters = 0 ;
+    scanf ( "%f" , &temp);   /* read the first digit */
+     /* iteration while the read number is not -1 */
+    while (temp != END_SEQ) {
+    /Save the read number in the table/
+   movieTheater->collect[movieTheater->numTheaters] = temp;
+   movieTheater->numTheaters = movieTheater->numTheaters + 1 ;
+    scanf ( "%f" , &temp);
+   }
+}
+
+void searchValue (tTheater movieTheater, float value, int *position) {
+    int i;
+     bool found;
+    /variable initialization. i is set to 1 to start searching in the table at postion 1 and found to false to indicate that so far value has not been found. The out parameter position is set to -1 by default /
+   i = 0 ;
+   found = false ;
+    *position = -1 ;
+    /* iteration while there are still elements in the table and the value has not been found */
+    while (i < movieTheater.numTheaters && !found) {
+    if (movieTheater.collect[i] >= value) {
+   found = true ;
+   }
+else {
+   i++;
+   }
+   }
+    if (found) {
+    *position = i;
+   }
+}
+
+int main () {
+   tTheater movieTheater;
+   float value;
+    int position;
+   fillTable(&movieTheater);
+    scanf ( "%f" , &value);
+   searchValue(movieTheater, value, &position);
+    printf ( "%d" , position);
+     return 0 ;
+}`
+
+Ejemplo 09
+==========
+
+[Pseudocódigo]
+
+const MAX_THEATERS: integer = 20;
+END_SEQ: real = -1.0;
+end const
+
+type
+tTheater = record
+collect: vector[MAX_THEATERS] of real;
+numTheaters: integer;
+end record
+end type
+
+action fillTable(out movieTheater: tTheater)
+var
+i, j: integer;
+found: boolean;
+temp: real;
+end var
+
+{table initialization}
+movieTheater.numTheaters := 0;
+temp := readReal(); {we read the first digit}
+
+{iteration while the read number is not -1}
+while temp ≠ END_SEQ do
+
+{find the right location}
+i := 1;
+found := false;
+
+{search for the right position}
+while i ≤ movieTheater.numTheaters and not found do
+if movieTheater.collect[i] ≤ temp then
+i := i+1;
+else
+found := true;
+end if
+end while
+
+{all the values to the right of the position found must be moved to one position to the right}
+if movieTheater.numTheaters > 0 then
+for j:=movieTheaters.numTheaters to i step -1 do
+movieTheater.collect[j+1] := movieTheater.collect[j];
+end for
+end if
+
+{insert new value}
+movieTheater.collect[i] := temp;
+movieTheaters.numTheaters := movieTheaters.numTheaters+1;
+temp := readReal();
+end while
+end action
+
+algorithm simulation
+var
+santalo: tTheaters;
+i: integer;
+end var
+
+fillTable(santalo);
+for i := 1 to santalo.numTheaters do
+writeReal(movieTheater.collect[i]);
+end for
+end algorithm
+
+[C]
+
+`# include
+
+include
+define MAX_THEATERS 20
+define END_SEQ -1.0
+typedef struct {
+    float collect[MAX_THEATERS];
+     int numTheaters;
+} tTheater;
+
+void fillTable (tTheater *movieTheater) {
+    /* var definition */
+     float temp;
+     int i, j;
+    bool found;
+    /* table initialization */
+   movieTheater->numTheaters = 0 ;
+    scanf ( "%f" , &temp);   /* read the first digit */
+    /* iteration while the read number is not -1 */
+    while (temp !=END_SEQ) {
+   i = 0 ;
+   found = false ;
+    while (i < movieTheater->numTheaters && ! found) {
+    if (movieTheater->collect[i] <= temp) {
+   i++;
+   }
+else {
+   found = true ;
+   }
+   }
+        /* move values to the right */
+        if (movieTheather->numTheaters > 0 ) {
+    for (j = movieTheater->numTheaters; j >= i ; j--) {
+   movieTheater->collect[j] = movieTheater->collect[j -1];
+   }
+   }
+    /* insert new value */
+   movieTheater->collect[i] = temp;
+   movieTheater->numTheaters = movieTheater->numTheaters + 1 ;
+    scanf ( "%f" , &temp);
+   }
+}
+
+int main () {
+   tTheater santalo;
+     int i;
+   fillTable(&santalo);
+     for (i = 0 ; i < santalo.numTheaters; i++) {
+    printf ( "%f " , santalo.collect[i]);
+   }
+    return 0 ;
+}`
+
+Ejemplo 10
+==========
+
+[Pseudocódigo]
+
+const MAX_THEATERS: integer = 20;
+end const
+
+type
+tTheater = record
+collect: vector[MAX_THEATERS] of real;
+numTheaters: integer;
+end record
+end type
+
+action searchValue(in movieTheater:tTheater, in value: real, out position: integer)
+var
+i: integer;
+first, last, middle: integer;
+end var
+
+first := 1;
+position := -1;
+last := movieTheater.numTheaters;
+
+while first ≠ last do
+middle := (first + last) div 2;
+if movieTheater.collect[middle] < value then
+first := middle + 1;
+else
+last := middle;
+end if
+end while
+
+if movieTheater.collect[first] = value then
+position := first;
+end if
+end action
+
+[C]
+
+`# include
+
+/* type definition for a table of 20 elements */
+
+define MAX_THEATERS 20
+typedef struct {
+    float collect[MAX_THEATERS];
+     int numTheaters;
+} tTheater;
+
+void searchValue (tTheater movieTheater, float value, int *position) {
+     int i;
+    int first, last, middle;
+   first = 0 ;
+   *position = -1 ;
+   last = movieTheater.numTheaters -1 ;
+    while (first != last) {
+   middle = (first + last) / 2 ;
+    if (movieTheater.collect[middle] < value) {
+   first = middle + 1 ;
+   }
+else {
+    last = middle;
+   }
+   }
+     if (movieTheater.collect[first] == value) {
+    *position = first;
+   }
+}`
+
+Ejemplo 11
+==========
+
+[Pseudocódigo]
+
+const MAX_THEATERS: integer = 20;
+end const
+
+type
+{declaration of a type for dates}
+tDate = record
+day: integer;
+month: integer;
+year: integer;
+end record;
+
+{declaration of type for theater information}
+tTheaterDescription = record
+name: string;
+capacity: integer;
+collect: real;
+date: tDate;
+end record
+
+{table with the information of each theater}
+tTheater = record
+movieTheaters: vector[MAX_THEATERS] of tTheaterDescription;
+numTheaters: integer;
+end record
+end type
+
+algorithm movieTheater
+var
+santalo: tTheater;
+k: integer;
+end var
+
+{we can access the information in the folowing way}
+{to access to the name of the third theater in santalo}
+santalo.movieTheater.name;
+
+{to access to the field collect of the k th theater in santalo}
+santalo.movieTheaters[k].collect;
+
+{to access to the capacity of the last theater stored in the table santalo}
+santalo.movieTheaters[santalo.numTheaters].capacity;
+end algorithm
+
+[C]
+
+`# include
+
+define MAX_THEATERS 20
+define MAX_NAME 50
+typedef struct {
+    int day;
+    int month;
+    int year;
+} tDate;
+
+typedef struct {
+    char name[MAX_NAME];
+    int capacity;
+    float collect;
+   tDate date;
+} tTheaterDescription;
+
+typedef struct {
+   tTheaterDescription movieTheathers[MAX_THEATERS];
+    int numTheaters;
+} tTheater;
+
+int main () {
+   tTheater santalo;
+    int k;
+     /* we can access to be information in the folowing way */
+    /* to access to the name of the third theater in santalo */
+   santalo.movieTheater
+.name;
+    /* to access to the field collect of the k th. theater in santalo */
+   santalo.movieTheaters[k -1].collect;
+    /* to access to the capacity of the last theater stored in the table santalo */
+   santalo.movieTheaters[santalo.numTheaters -1].capacity;
+    return 0 ;
+}`
+
+Ejemplo 12
+==========
+
+[Pseudocódigo]
+
+const MAX_THEATERS: integer = 20;
+MAX_MOVIES: integer = 15;
+end const
+
+type
+{declaration of a type for dates}
+tDate = record
+day: integer;
+month: integer;
+year: integer;
+end record
+
+{declaration of type for theater information}
+tTheaterDescription = record
+name: string;
+capacity: integer;
+collect: real;
+date: tDate;
+end record
+
+{table with the information of each theater}
+tTheater = record
+movieTheaters: vector[MAX_THEATERS] of tTheaterDescription;
+numTheaters: integer;
+end record
+
+{declaration of a table of tTheater}
+tCompany = record
+movies: vector[MAX_MOVIES] of tTheater;
+numMovies: integer;
+end record
+end type
+
+algorithm movieTheater
+var
+theMovieCompany: tCompany;
+m, k: integer;
+lmovie, ltheater: integer;
+end var
+
+{to access to the name of the third theater of the first movie}
+theMovieCompany.movies.movieTheaters.name;
+
+{to access to the filed collect of the k th theater of the mth movie}
+theMovieCompany.movies[m].movieTheaters[k].collect;
+
+{to access to the capacity of the last theater of the last movie}
+lmovie := theMovieCompany.numMovies;
+ltheater := theMovieCompany.movies[lmovie].numTheaters;
+theMovieCompany.movies[lmovie].movieTheaters[ltheater].capacity;
+end algorithm
+
+[C]
+
+`# include
+
+define MAX_THEATERS 20
+define MAX_MOVIES 15
+typedef struct {
+    int day;
+    int month;
+    int year;
+} tDate;
+
+typedef struct {
+   tString name;
+    int capacity;
+    float collect;
+   tDate date;
+} tTheaterDescription;
+
+typedef struct {
+   tTheaterDescription movieTheathers[MAX_THEATERS];
+    int numTheaters;
+} tTheater;
+
+/* declaration of a table of tTheater */
+typedef struct {
+   tTheater movies[MAX_MOVIES];`

@@ -1,0 +1,48 @@
+GUION VIDEO PR3 — Dificultades principales (~2 minutos)
+======================================================
+
+
+[0:00 – 0:15] INTRODUCCIÓN
+--------------------------
+
+    - Presentación 
+    - D1 - Maquetación de pseudocódigo y de las tablas de salida del programa
+    - D2 - Algunos componentes de lógica del sistema
+
+
+[0:15 – 0:45] DIFICULTAD 2.1 — Tablas anidadas y parámetros in / out / inout
+---------------------------------------------------------------------------
+
+    "Lo primero fue pasar de vectores simples, como en PR1 y PR2,
+    a tablas con estructuras anidadas:
+    un nodo tiene sectores,
+    y la red es un vector de nodos con un contador nNodes.
+
+    Eso obliga a pensar siempre en dos niveles:
+    grid.nodes[i] y grid.nodes[i].sectorList[j].
+    En C además hay punteros y parámetros de salida;
+    en pseudocódigo, in, out e inout.
+
+
+[1:15 – 1:45] DIFICULTAD 2.2 — Ejercicio 8: borrar de una tabla mientras recorres
+---------------------------------------------------------------------------------
+
+    removeInactiveNodes.
+
+    Hay que detectar nodos inactivos
+    —consumo máximo cero o negativo—    
+    y eliminarlos desplazando el resto hacia la izquierda,
+    como en los ejemplos de tablas del temario.
+    El problema es que si borras en la posición i
+    y sigues avanzando,
+    te saltas el nodo que acaba de ocupar ese hueco.
+
+    La solución fue hacer i-- después de eliminar,
+    o recorrer hacia atrás.
+    En C lo resolví con un for y i-- dentro del bucle;
+    en pseudocódigo eso choca con la regla formal del for,
+    pero refleja exactamente lo que hace el código.
+
+[1:45 – 2:00] CIERRE
+--------------------
+

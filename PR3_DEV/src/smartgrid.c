@@ -35,11 +35,7 @@ void writeGridReport(tGridTable *grid, tPowerScale powerScale) {
     float maxNodeConsumption;
     
     printf("\nGRID NODES:\n");
-    /* Tabs are used instead of width specifiers (e.g. %-18s) to stay within
-       the syntax seen in the course. Node names have fixed length (7 chars)
-       and values fit under 8 chars, so \t aligns columns at tab stops 0/16/32.
-       Headers use one tab; data rows use two tabs to reach the same column. */
-    printf("NODE_NAME\tMIN_CONS\tMAX_CONS\n");
+    printf("NODE_NAME%22s%11s\n", "MIN_CONS", "MAX_CONS");
     printf("=============================================\n");
     /* Iterate through all nodes and print the report for each node */
     for (i = 0; i < grid->nNodes; i++) {
@@ -48,7 +44,7 @@ void writeGridReport(tGridTable *grid, tPowerScale powerScale) {
             minNodeConsumption = kwToMw(minNodeConsumption);
             maxNodeConsumption = kwToMw(maxNodeConsumption);
         } 
-        printf("%s\t\t%.2f\t\t%.2f\n", grid->nodes[i].nodeName, minNodeConsumption, maxNodeConsumption);    
+        printf("%-8s%23.2f%11.2f\n", grid->nodes[i].nodeName, minNodeConsumption, maxNodeConsumption);    
     }
 }
 /* ... */

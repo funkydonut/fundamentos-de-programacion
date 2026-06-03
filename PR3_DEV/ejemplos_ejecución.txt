@@ -1,0 +1,53 @@
+Ejemplo 1
+
+INPUT DATA
+LOAD DATA FROM FILE. ENTER FILE NAME >> grid1.txt
+SELECT POWER SCALE (1-KW, 2-MW) >> 1
+
+GRID NODES:
+NODE_NAME         MIN_CONS      MAX_CONS
+=============================================
+NODE_01           40.00         60.00
+NODE_02           30.00         42.00
+NODE_03           75.00         90.00
+NODE_04           18.00         30.00
+NODE_05           45.00         55.00
+NODE_06           10.00         15.00
+NODE_07           60.00         72.00
+NODE_08           85.00         95.00
+NODE_09            0.00         0.00
+NODE_10           50.00         50.00
+NODE_11           22.00         28.00
+NODE_12           71.00         79.00
+NODE_13            0.00         0.00
+NODE_14           82.00         88.00
+NODE_15           40.00         44.00
+NODE_16           51.00         59.00
+NODE_17           21.00         29.00
+NODE_18           91.00         95.00
+
+OVERLOADED NODES REPORT
+=======================
+ALL NODES OPERATING NORMALLY
+
+INACTIVE NODES REMOVED: 2
+
+GRID NODES:
+NODE_NAME         MIN_CONS    MAX_CONS
+=============================================
+NODE_01           40.00         60.00
+NODE_02           30.00         42.00
+NODE_03           75.00         90.00
+NODE_04           18.00         30.00
+NODE_05           45.00         55.00
+NODE_06           10.00         15.00
+NODE_07           60.00         72.00
+NODE_08           85.00         95.00
+NODE_10           50.00         50.00
+NODE_11           22.00         28.00
+NODE_12           71.00         79.00
+NODE_14           82.00         88.00
+NODE_15           40.00         44.00
+NODE_16           51.00         59.00
+NODE_17           21.00         29.00
+NODE_18           91.00         95.00

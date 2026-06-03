@@ -1,0 +1,156 @@
+const
+    MAX_NODES: integer = 20 {Maximum number of nodes}
+    SECTORS_PER_NODE: integer = 5; {Number of sectors per node}
+    OVERLOAD_TOTAL_THRESHOLD: real = 500.0 {Limit for overload consumption}
+    CRITICAL_SECTOR_LIMIT: real = 150.0 {Limit for security sector consumption}
+    {...}
+end const
+
+type
+    {Enum to represent sector types}
+    tSectorType = {INDUSTRY, RESIDENTIAL, TRANSPORT, SERVICES, SANITARY}
+
+    {Available power scales}
+    tPowerScale = {KW, MW};
+
+    tSectorData = record {Structure to represent a sector's data}
+        sector: tSectorType; {Type of sector}
+        currentConsumption: real; {Consumption in kW }
+    end record
+
+    tGridNode = record {Structure to represent a node info}
+        nodeName: string; {Name of the node}
+        {Vector of sectors within the node}
+        sectorList: vector[SECTORS_PER_NODE] of tSectorData;
+    end record
+
+    tGridTable = record {Structure to represent a grid}
+        {Vector of nodes within the grid}
+        nodes: vector[MAX_NODES] of tGridNode;
+        nNodes: integer; {Number of nodes in the grid}
+    end record
+end type
+
+{Exercise 3.1}
+{Action to print a formatted report of all nodes}
+{...}
+
+{Exercise 4}
+{Action to find min and max consumption in a node}
+{...}
+
+{Exercise 5}
+{Function to convert kilowatts to megawatts}
+{...}
+
+{Exercise 6}
+{Action to filter overloaded nodes into a new table}
+{...}
+
+{Exercise 8}
+{Action that removes nodes with 0.0kW max consumption}
+{...}
+
+{Action for load data from file}
+action loadGridDataFromFile(in filename: string, out grid: tGridTable, out isRead: boolean)
+    var
+        fileToRead: file;
+        newNode: tGridNode;
+        i: integer;
+    end var
+
+    {Open the input file}
+    fileToRead := openFile(filename);
+    if fileToRead ≠ NULL then
+        grid.nNodes := 0;
+        {Read while there are nodes and space available}
+        while not isEndOfFile(fileToRead) and grid.nNodes < MAX_NODES do
+            {Read node name}
+            newNode.nodeName := readStringFromFile(fileToRead);
+            {Read all sector data of this node}
+            for i := 1 to SECTORS_PER_NODE do
+                {Read sector type and consumption}
+                newNode.sectorList[i].sector := readEnumFromFile(fileToRead);
+                newNode.sectorList[i].currentConsumption := readRealFromFile(fileToRead);
+            end for
+            {Add new node to grid table}
+            grid.nNodes := grid.nNodes + 1;
+            grid.nodes[grid.nNodes] := newNode;
+        end while
+        {Close the file}
+        closeFile(fileToRead);
+        isRead := true;
+    else
+        isRead := false;
+    end if
+end action
+
+{Function to check for overloads}
+function isOverloaded(node: tGridNode): boolean
+    var
+        total: real;
+        criticalOverload: boolean;
+        i: integer;
+    end var
+
+    total := 0.0;
+    criticalOverload := false;
+    i := 1;
+    while i ≤ SECTORS_PER_NODE and not criticalOverload do
+        total := total + node.sectorList[i].currentConsumption;
+        {Node is in critical overload if any sector consumes more than 150kW
+        or the total accumulated consumption exceeds 500kW}
+        criticalOverload := total > OVERLOAD_TOTAL_THRESHOLD or
+                            node.sectorList[i].currentConsumption > CRITICAL_SECTOR_LIMIT;
+        i := i + 1;
+    end while
+    return criticalOverload;
+end function
+
+algorithm UOCSmartGridManagement
+    var
+        grid: tGridTable; {Node table}
+        isRead: boolean; {Result of reading}
+        i: integer;
+        filename: string; {Name of file to read}
+        {...}
+    end var
+
+    {Exercise 1}
+    {Data input and file loading}
+    writeString("INPUT DATA");
+    writeString("LOAD DATA FROM FILE. ENTER FILE NAME >> ");
+    {...}
+
+    {Only proceed if the file was read successfully and is not empty}
+    if isRead and grid.nNodes > 0 then
+        {Exercise 2}
+        {Power scale input with validation}
+        {...}
+
+        {Exercise 3}
+        {General network report}
+        {...}
+
+        {Exercise 6}
+        {Critical nodes filtering and alerts}
+        writeString("OVERLOADED NODES REPORT");
+        writeString("=======================");
+        {...}
+
+        {Exercise 7}
+        {Show nodes with critical alert, if exists any}
+        {...}
+
+        {Exercise 8}
+        {Network maintenance: cleanup of inactive nodes}
+        {...}
+
+        {Exercise 8.1}
+        {Check if any node was removed and show clean table}
+        {...}
+    else
+        {Error message if loading failed}
+        writeString("ERROR: COULD NOT READ FILE OR TABLE EMPTY");
+    end if
+end algorithm
