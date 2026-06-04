@@ -22,7 +22,7 @@ void printNodeData(tGridNode node) {
            node.nodeName, 
            node.hasOverload, 
            node.hasVoltageEmergency, 
-           node.hasStabilityWarning);
+           node.hasStabilityWarnings);
            
     /* Print detailed information for each sector */
     for (i = 0; i < SECTORS_PER_NODE; i++) {
@@ -114,7 +114,46 @@ bool isNodeStable (tGridNode node) {
 }
 
 /* Exercise 2.2 */
-/* ... */
+void evaluateCrisisStatus(tPowerScale scale, tGridNode *node) {
+    int i = 0; /* Index for consecutive overloads */
+    int j = 0; /* Index for voltage drops */
+    bool hasConsecutiveOverload = false;
+    bool hasVoltageEmergency = false;
+    bool hasStabilityWarnings = false;
+    float normalizedCriticalSectorLimit;
+
+    /* Critical sector limit normalization */
+    if (scale == MW) {
+        normalizedCriticalSectorLimit = kwToMw(CRITICAL_SECTOR_LIMIT);
+    } else {
+        normalizedCriticalSectorLimit = CRITICAL_SECTOR_LIMIT;
+    }
+    
+    /* Check for consecutive overloads and flag overloaded nodes */
+    while (i < SECTORS_PER_NODE - 1 && !hasConsecutiveOverload) {
+        if (node->sectors[i].consumption > normalizedCriticalSectorLimit 
+            && node->sectors[i + 1].consumption > normalizedCriticalSectorLimit) {
+            hasConsecutiveOverload = true;
+        }
+        i++;
+    }
+    node->hasOverload = hasConsecutiveOverload;
+
+    /* Check for voltage emergency and flag nodes with voltage drops */
+    while (j < SECTORS_PER_NODE && !hasVoltageEmergency) {
+        if (node->sectors[j].voltageDrop > VOLTAGE_DROP_THRESHOLD) {
+            hasVoltageEmergency = true;
+        }
+        j++;
+    }
+    node->hasVoltageEmergency = hasVoltageEmergency;
+
+    /* Check for stability warnings and flag nodes with stability warnings */
+    if (!isNodeStable(*node)) {
+        hasStabilityWarnings = true;
+    }
+    node->hasStabilityWarnings = hasStabilityWarnings;
+}
 
 
 /* Exercise 3.1 */

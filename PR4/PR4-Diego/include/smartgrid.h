@@ -19,6 +19,7 @@
 #define CRITICAL_SECTOR_LIMIT 150.0f
 #define STABILITY_INDEX_THRESHOLD 120.0f
 #define MAX_UNSTABLE_SECTORS 3
+#define VOLTAGE_DROP_THRESHOLD 10.0f
 
 /* Maintenance Thresholds */
 /*...*/
@@ -74,7 +75,7 @@ void loadGridDataFromFile(const char* filename, tPowerScale scale, tGridTable *g
 bool isNodeStable(tGridNode node);
 
 /* Exercise 2.2 */
-/* ... */
+void evaluateCrisisStatus(tPowerScale scale, tGridNode *node);
 
 /* Exercise 3.1 */
 /* ... */
