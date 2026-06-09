@@ -1,0 +1,181 @@
+{Constants for file reading and limits}
+const
+    MAX_FILE_NAME: integer = 101;
+    MAX_LINE: integer = 514;
+    MAX_NAME_LENGTH: integer = 26;
+    SECTORS_PER_NODE: integer = 5;
+    MAX_NODES: integer = 20;
+
+    {Constants for conversion and thresholds}
+    MW_FACTOR: real = 0.001;
+    CRITICAL_SECTOR_LIMIT: real = 150.0;
+    {...}
+
+    {Maintenance Thresholds}
+    {...}
+end const
+
+{User defined types}
+type
+    tSectorType = {INDUSTRY, RESIDENTIAL, TRANSPORT, SERVICES, SANITARY};
+    tPowerScale = {KW, MW};
+
+    tSectorData = record
+        sectorType: tSectorType;
+        scale: tPowerScale;
+        {Exercise 1.2}
+        {...}
+    end record
+
+    tGridNode = record
+        nodeName: string;
+        sectors: vector[SECTORS_PER_NODE] of tSectorData;
+        {Exercise 1.1}
+        {...}
+    end record
+
+    tGridTable = record
+        nodes: vector[MAX_NODES] of tGridNode;
+        nNodes: integer;
+    end record
+
+    tGridStats = record
+        totalNodes: integer; {Total number of nodes in the grid}
+        emergencyPercentage: real; {Percentage of nodes in emergency status}
+        totalConsumption: real; {Total energy consumption of the network}
+        maxVoltageDrop: real; {Maximum voltage drop detected}
+        nodeWithMaxVoltageDrop: string; {Name of the node with maximum voltage drop}
+        maxNodeConsumption: real; {Consumption value of the most demanding node}
+        nodeWithMaxConsumption: string; {Name of the node with maximum consumption}
+    end record
+end type
+
+{Reads grid data from a specified text file and populates the grid table.}
+action loadGridDataFromFile(in filename: string, in scale: tPowerScale,
+                            out gridTable: tGridTable, out isRead: boolean)
+    var
+        fileToRead: file;
+        newNode: tGridNode;
+        i: integer;
+        consumption: real;
+        sectorDataTmp: tSectorData;
+    end var
+
+    {Open the specified file for reading}
+    fileToRead := openFile(filename);
+    if fileToRead ≠ NULL then
+        gridTable.nNodes := 0;
+        {Read file line by line until EOF or maximum nodes reached}
+        while not isEndOfFile(fileToRead) and gridTable.nNodes < MAX_NODES do
+            {Process lines that are not empty}
+            newNode.nodeName := readStringFromFile(fileToRead);
+            {Parse data for each sector}
+            for i := 1 to SECTORS_PER_NODE do
+                sectorDataTmp.sectorType := readEnumFromFile(fileToRead);
+                consumption := readRealFromFile(fileToRead);
+                sectorDataTmp.voltageDrop := readRealFromFile(fileToRead);
+                sectorDataTmp.stabilityIndex := readRealFromFile(fileToRead);
+                sectorDataTmp.scale := scale;
+                {Convert consumption if scale is MW}
+                if sectorDataTmp.scale = MW then
+                    sectorDataTmp.consumption := kwToMw(consumption);
+                else
+                    sectorDataTmp.consumption := consumption;
+                end if
+                newNode.sectors[i] := sectorDataTmp;
+            end for
+            {Store the parsed node in the table}
+            gridTable.nodes[gridTable.nNodes + 1] := newNode;
+            gridTable.nNodes := gridTable.nNodes + 1;
+        end while
+        closeFile(fileToRead);
+        isRead := true;
+    else
+        isRead := false;
+    end if
+end action
+
+{Exercise 2.1}
+{...}
+
+{Exercise 2.2}
+{...}
+
+{Exercise 3.1}
+{...}
+
+{Exercise 3.2}
+{...}
+
+{Exercise 3.3}
+{...}
+
+{Exercise 4.2}
+{...}
+
+{Exercise 5.1}
+{...}
+
+{Exercise 5.2}
+{...}
+
+algorithm PR4_Smart_Grid_Crisis_Management_Solution
+    var
+        grid: tGridTable;
+        scale: tPowerScale;
+        crisisResultsTable: tGridTable;
+        filename: string;
+        isRead: boolean;
+        nodeName: string;
+        found: boolean;
+        isValidScale: boolean;
+        stats: tGridStats;
+        i: integer;
+    end var
+
+    {Initializations}
+    isRead := false;
+    found := false;
+
+    writeString("--- SMART GRID CRISIS MANAGEMENT SYSTEM PR4 ---");
+    writeString("INPUT DATA");
+
+    do
+        writeString("SELECT POWER SCALE (1-KW, 2-MW) >>");
+        scale := readEnum();
+        isValidScale := (scale = KW) or (scale = MW);
+        if not isValidScale then
+            writeString("INVALID DATA, TRY AGAIN!");
+        end if
+    while not isValidScale;
+
+    {Prompt user for filename and attempt to load data}
+    writeString("LOAD DATA FROM FILE. ENTER FILE NAME >>");
+    filename := readString();
+    loadGridDataFromFile(filename, scale, grid, isRead);
+
+    if isRead then
+        {Exercises 2.x}
+        {Evaluate the status of each node}
+        {...}
+
+        {Exercises 3.x}
+        writeString("RESULTS");
+        writeString("NODES WITH ALERTS");
+        writeString("=================");
+        {...}
+
+        if crisisResultsTable.nNodes > 0 then
+            {...}
+            {Exercise 4.1}
+            {...}
+        else
+            writeString("NO ALERTS SITUATIONS");
+        end if
+
+        {Exercise 5.x}
+        {...}
+    else
+        writeString("ERROR: NO DATA RECOVERED FROM FILE ");
+    end if
+end algorithm

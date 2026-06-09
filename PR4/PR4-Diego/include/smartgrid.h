@@ -78,19 +78,19 @@ bool isNodeStable(tGridNode node);
 void evaluateCrisisStatus(tPowerScale scale, tGridNode *node);
 
 /* Exercise 3.1 */
-/* ... */
+void insertOrderedNode (tGridTable *table, tGridNode node);
 
 /* Exercise 3.2 */
-/* ... */
+void getNodesWithAlerts(tGridTable *table, tGridTable *alertTable);
 
 /* Exercise 3.3 */
-/* ... */
+void writeGridStatus(tGridTable *alertTable);
 
 /* Exercise 4.2 */
-/* ... */
+void getNode(tGridTable *alertTable, char *nodeName, tGridNode *nodeResult, bool *found);
 
 /* Exercise 5.1 */
-/* ... */
+void calculateGridStatistics(tGridTable *table, tGridStats *statistics);
 
 /* Exercise 5.2 */
-/* ... */
+void printGridStatistics(tGridStats *statistics);

@@ -157,19 +157,106 @@ void evaluateCrisisStatus(tPowerScale scale, tGridNode *node) {
 
 
 /* Exercise 3.1 */
-/* ... */
-
+void insertOrderedNode (tGridTable *table, tGridNode node) {
+    int i = 0;
+    int j;
+    
+    if (table->nNodes < MAX_NODES) {
+        /* While the node is greater than the current node, move to the next node */
+        while (i < table->nNodes && strcmp(node.nodeName, table->nodes[i].nodeName) > 0) {
+            i++;
+        }
+        /* Move the nodes rightwards from the end to make space */
+        for (j = table->nNodes; j > i; j--) {
+            table->nodes[j] = table->nodes[j - 1];
+        }
+        
+        table->nodes[i] = node;
+        table->nNodes++;
+    }
+}
 /* Exercise 3.2 */
-/* ... */
+void getNodesWithAlerts(tGridTable *table, tGridTable *alertTable) {
+    int i = 0;
+    alertTable->nNodes = 0;
+    /* Add nodes with alerts to the alert table */
+    while (i < table->nNodes) {
+        if (table->nodes[i].hasOverload || table->nodes[i].hasVoltageEmergency || table->nodes[i].hasStabilityWarnings) {
+            insertOrderedNode(alertTable, table->nodes[i]);
+        }
+        i++;
+    }
+}
 
 /* Exercise 3.3 */
-/* ... */
+void writeGridStatus(tGridTable *alertTable) {
+    for (int i = 0; i < alertTable->nNodes; i++) {
+        printf("NODE: %s - FLAGS [OVERLOAD: %d, VOLTAGE: %d, STABILITY: %d]\n", 
+            alertTable->nodes[i].nodeName, 
+            alertTable->nodes[i].hasOverload, 
+            alertTable->nodes[i].hasVoltageEmergency, 
+            alertTable->nodes[i].hasStabilityWarnings);
+    }   
+}
 
 /* Exercise 4.2 */
-/* ... */
+/* Note: User input and data printing are handled in main */
+void getNode (tGridTable *alertTable, char *nodeName, tGridNode *nodeResult, bool *found) {
+    int i = 0;
+    *found = false;
+
+
+    while (i < alertTable->nNodes && !*found) {
+        if (strcmp(alertTable->nodes[i].nodeName, nodeName) == 0) {
+            *found = true;
+            *nodeResult = alertTable->nodes[i];
+        }
+        i++;
+    }
+}
 
 /* Exercise 5.1 */
-/* ... */
+void calculateGridStatistics(tGridTable *table, tGridStats *statistics) {
+    tGridTable tmpTable; /* Temporary table to store nodes with alerts */
+    float tmpNodeMaxConsumption = 0;
 
+    statistics->totalConsumption = 0;
+    statistics->maxVoltageDrop = 0;
+    statistics->maxNodeConsumption = 0;
+    statistics->totalNodes = table->nNodes; /* Total nodes in the grid */
+
+    /* Get nodes with alerts and calculate emergency percentage */
+    getNodesWithAlerts(table, &tmpTable);
+    if (table->nNodes > 0) {
+        statistics->emergencyPercentage = (float)tmpTable.nNodes / table->nNodes * 100;
+    } else {
+        statistics->emergencyPercentage = 0;
+    }
+   
+    for (int i = 0; i < table->nNodes; i++) {
+        for (int j = 0; j < SECTORS_PER_NODE; j++) {
+            /* Total consumption of the network */
+            statistics->totalConsumption += table->nodes[i].sectors[j].consumption;
+            /* Maximum voltage drop and node with maximum voltage drop */
+            if (table->nodes[i].sectors[j].voltageDrop > statistics->maxVoltageDrop) {
+                statistics->maxVoltageDrop = table->nodes[i].sectors[j].voltageDrop;
+                strcpy(statistics->nodeWithMaxVoltageDrop, table->nodes[i].nodeName);
+            }
+            /* Maximum node consumption and node with maximum consumption */
+            tmpNodeMaxConsumption += table->nodes[i].sectors[j].consumption;
+        }
+        if (tmpNodeMaxConsumption > statistics->maxNodeConsumption) {
+            statistics->maxNodeConsumption = tmpNodeMaxConsumption;
+            strcpy(statistics->nodeWithMaxConsumption, table->nodes[i].nodeName);
+        }   
+        tmpNodeMaxConsumption = 0;
+    }
+}
 /* Exercise 5.2 */
-/* ... */
+void printGridStatistics(tGridStats *statistics) {
+    printf("TOTAL NODES: %d\n", statistics->totalNodes);
+    printf("NODES IN ALERTS: %.2f%%\n", statistics->emergencyPercentage);
+    printf("TOTAL NETWORK CONSUMPTION: %.2f\n", statistics->totalConsumption);
+    printf("PEAK CONSUMPTION NODE: %s (%.2f)\n", statistics->nodeWithMaxConsumption, statistics->maxNodeConsumption);
+    printf("MOST CRITICAL VOLTAGE DROP: %.2f AT NODE %s\n", statistics->maxVoltageDrop, statistics->nodeWithMaxVoltageDrop);
+}

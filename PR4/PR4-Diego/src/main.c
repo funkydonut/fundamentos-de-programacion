@@ -18,6 +18,7 @@ int main()
     bool found;
 	bool isValidScale;
     tGridStats stats;
+    tGridNode nodeResult;
 	
 	int i;
     
@@ -47,27 +48,41 @@ int main()
     if (isRead) { 
 		
 		/* Exercises 2.x*/
-        /* Evaluate the status of each node */
-        /* ... */
+        i = 0;
+        while (i < grid.nNodes) {
+            evaluateCrisisStatus(scale, &grid.nodes[i]);
+            i++;
+        }
 
         /* Exercises 3.x */
+        getNodesWithAlerts(&grid, &crisisResultsTable);
         printf("\nRESULTS\n");
         printf("NODES WITH ALERTS\n");
         printf("=================\n");
-        /* ... */
 
 		if (crisisResultsTable.nNodes > 0) { 
-			/*...*/   
+			writeGridStatus(&crisisResultsTable);
 			/* Exercise 4.1 */
-			/*...*/ 			
+            printf("SELECT NODE BY NAME TO SEARCH >>\n");
+            scanf("%s", nodeName);
+            /* Get node, if found, and determine "found" flag */
+            getNode(&crisisResultsTable, nodeName, &nodeResult, &found);
+            /* If not found, print error message. Else, call printNodeData */
+            if (!found) {
+                printf("NODE IS NOT IN ALERTS LIST\n");
+            } else {
+                printNodeData(nodeResult);
+            }			
 		
         } else {
             printf("NO ALERTS SITUATIONS\n");
         }
 
         /* Exercise 5.x */
-        /* ... */
-        
+        printf("--- GLOBAL GRID STATISTICS ---\n");
+        calculateGridStatistics(&grid, &stats);
+        printGridStatistics(&stats);
+        printf("------------------------------\n");
     }
     else {
         printf("ERROR: NO DATA RECOVERED FROM FILE %s\n", filename);   
