@@ -1,0 +1,77 @@
+==========================================================
+GUION VIDEO PR4 - SMART GRID (aprox. 2 minutos)
+==========================================================
+
+----------------------------------------------------------
+1. DIFICULTAD DEL PSEUDOCODIGO (30 s)
+----------------------------------------------------------
+La parte de pseudocodigo no introduce conceptos realmente
+nuevos respecto a practicas anteriores: seguimos usando
+registros, vectores, recorridos y busquedas.
+
+La dificultad real ha sido otra:
+
+- Es largo y muy detallado: hay que reflejar TODAS las
+  acciones y funciones, con sus variables, parametros de
+  entrada/salida y estructuras de control.
+
+- Es tedioso de mantener: cualquier cambio en el codigo C
+  obliga a actualizar el pseudocodigo para que ambos sean
+  coherentes (mismos bucles, mismos tipos, mismo flujo).
+
+- Exige rigor: cuidar la indentacion, el uso de in / out /
+  inout y mantener la consistencia entre las distintas
+  acciones para que se lea con claridad.
+
+----------------------------------------------------------
+2. EJERCICIO 3.1 - insertOrderedNode (35 s)
+----------------------------------------------------------
+Esta accion inserta un nodo en la tabla de destino manteniendo
+el orden alfabetico por nombre.
+
+La logica tiene dos fases separadas:
+1. Un WHILE busca la posicion correcta comparando nombres
+   con strcmp.
+2. Un FOR desplaza los nodos existentes hacia la derecha
+   para hacer hueco, y despues inserta el nodo.
+
+PROBLEMAS Y CORRECCIONES:
+
+- Al principio me costo entender que el desplazamiento va
+  desde el FINAL de la tabla hacia la posicion encontrada,
+  no al reves. Si no desplazas bien, sobrescribes un nodo
+  en lugar de abrir un hueco.
+
+- Tambien tuve que comprobar MAX_NODES antes de insertar,
+  para no salirme del vector.
+
+----------------------------------------------------------
+3. EJERCICIO 5.1 - calculateGridStatistics (35 s)
+----------------------------------------------------------
+Este ha sido el ejercicio mas complejo y largo. Calcula
+varias estadisticas de toda la red: total de nodos,
+porcentaje en emergencia, consumo total, maxima caida de
+voltaje y nodo con mayor consumo acumulado.
+
+COMPLICACIONES Y REFACTORIZACION:
+
+- Al principio resolvia cada estadistica en su propio bucle,
+  lo que generaba codigo repetido y mas largo de lo necesario.
+  Lo refactorice para reunir varias acciones dentro de un solo
+  recorrido de nodos y sectores.
+
+- El error mas importante fue con el "nodo de mayor consumo":
+  comparaba sector a sector en lugar de acumular el consumo
+  total de cada nodo. Lo corregi usando una variable temporal
+  que suma los sectores de un nodo y se reinicia en cada nodo.
+
+- Tuve que colocar bien los IF: la comparacion del consumo
+  total del nodo debe ir FUERA del bucle de sectores, despues
+  de sumarlos todos, mientras que la maxima caida de voltaje
+  se comprueba dentro del bucle de sectores.
+
+- Tambien controle la division por cero en el porcentaje de
+  emergencia y la inicializacion de todos los campos.
+
+El resultado es un unico bucle bien estructurado, sin codigo
+repetido y facil de leer.

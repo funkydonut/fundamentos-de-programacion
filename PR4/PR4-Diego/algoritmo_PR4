@@ -9,7 +9,9 @@ const
     {Constants for conversion and thresholds}
     MW_FACTOR: real = 0.001;
     CRITICAL_SECTOR_LIMIT: real = 150.0;
-    {...}
+    STABILITY_INDEX_THRESHOLD: real = 120.0;
+    MAX_UNSTABLE_SECTORS: integer = 3;
+    VOLTAGE_DROP_THRESHOLD: real = 10.0;
 
     {Maintenance Thresholds}
     {...}
@@ -23,15 +25,17 @@ type
     tSectorData = record
         sectorType: tSectorType;
         scale: tPowerScale;
-        {Exercise 1.2}
-        {...}
+        consumption: real;
+        voltageDrop: real;
+        stabilityIndex: real;
     end record
 
     tGridNode = record
         nodeName: string;
         sectors: vector[SECTORS_PER_NODE] of tSectorData;
-        {Exercise 1.1}
-        {...}
+        hasOverload: boolean;
+        hasVoltageEmergency: boolean;
+        hasStabilityWarnings: boolean;
     end record
 
     tGridTable = record
@@ -96,28 +100,212 @@ action loadGridDataFromFile(in filename: string, in scale: tPowerScale,
 end action
 
 {Exercise 2.1}
-{...}
+function isNodeStable(node: tGridNode): boolean
+    var
+        i: integer;
+        nSectorsUnstable: integer;
+        isStable: boolean;
+    end var
+
+    i := 1;
+    nSectorsUnstable := 0;
+    isStable := true;
+    while i ≤ SECTORS_PER_NODE and isStable do
+        if node.sectors[i].stabilityIndex < STABILITY_INDEX_THRESHOLD then
+            nSectorsUnstable := nSectorsUnstable + 1;
+            if nSectorsUnstable ≥ MAX_UNSTABLE_SECTORS then
+                isStable := false;
+            end if
+        end if
+        i := i + 1;
+    end while
+    return isStable;
+end function
+
+function kwToMw(kw: real): real
+    return kw * MW_FACTOR;
+end function
 
 {Exercise 2.2}
-{...}
+action evaluateCrisisStatus(in scale: tPowerScale, inout node: tGridNode)
+    var
+        i: integer;
+        j: integer;
+        hasConsecutiveOverload: boolean;
+        hasVoltageEmergency: boolean;
+        hasStabilityWarnings: boolean;
+        normalizedCriticalSectorLimit: real;
+    end var
+
+    if scale = MW then
+        normalizedCriticalSectorLimit := kwToMw(CRITICAL_SECTOR_LIMIT);
+    else
+        normalizedCriticalSectorLimit := CRITICAL_SECTOR_LIMIT;
+    end if
+
+    i := 1;
+    hasConsecutiveOverload := false;
+    while i ≤ SECTORS_PER_NODE - 1 and not hasConsecutiveOverload do
+        if node.sectors[i].consumption > normalizedCriticalSectorLimit and
+           node.sectors[i + 1].consumption > normalizedCriticalSectorLimit then
+            hasConsecutiveOverload := true;
+        end if
+        i := i + 1;
+    end while
+    node.hasOverload := hasConsecutiveOverload;
+
+    j := 1;
+    hasVoltageEmergency := false;
+    while j ≤ SECTORS_PER_NODE and not hasVoltageEmergency do
+        if node.sectors[j].voltageDrop > VOLTAGE_DROP_THRESHOLD then
+            hasVoltageEmergency := true;
+        end if
+        j := j + 1;
+    end while
+    node.hasVoltageEmergency := hasVoltageEmergency;
+
+    hasStabilityWarnings := false;
+    if not isNodeStable(node) then
+        hasStabilityWarnings := true;
+    end if
+    node.hasStabilityWarnings := hasStabilityWarnings;
+end action
 
 {Exercise 3.1}
-{...}
+action insertOrderedNode(inout table: tGridTable, in node: tGridNode)
+    var
+        i: integer;
+        j: integer;
+    end var
+
+    if table.nNodes < MAX_NODES then
+        i := 1;
+        while i ≤ table.nNodes and node.nodeName > table.nodes[i].nodeName do
+            i := i + 1;
+        end while
+        for j := table.nNodes downto i do
+            table.nodes[j + 1] := table.nodes[j];
+        end for
+        table.nodes[i] := node;
+        table.nNodes := table.nNodes + 1;
+    end if
+end action
 
 {Exercise 3.2}
-{...}
+action getNodesWithAlerts(in table: tGridTable, out alertTable: tGridTable)
+    var
+        i: integer;
+    end var
+
+    alertTable.nNodes := 0;
+    i := 1;
+    while i ≤ table.nNodes do
+        if table.nodes[i].hasOverload or table.nodes[i].hasVoltageEmergency or
+           table.nodes[i].hasStabilityWarnings then
+            insertOrderedNode(alertTable, table.nodes[i]);
+        end if
+        i := i + 1;
+    end while
+end action
 
 {Exercise 3.3}
-{...}
+action writeGridStatus(in alertTable: tGridTable)
+    var
+        i: integer;
+    end var
+
+    for i := 1 to alertTable.nNodes do
+        writeString("NODE: ");
+        writeString(alertTable.nodes[i].nodeName);
+        writeString(" - FLAGS [OVERLOAD: ");
+        writeInteger(alertTable.nodes[i].hasOverload);
+        writeString(", VOLTAGE: ");
+        writeInteger(alertTable.nodes[i].hasVoltageEmergency);
+        writeString(", STABILITY: ");
+        writeInteger(alertTable.nodes[i].hasStabilityWarnings);
+        writeString("]");
+    end for
+end action
+
+action printNodeData(in node: tGridNode)
+end action
 
 {Exercise 4.2}
-{...}
+action getNode(in alertTable: tGridTable, in nodeName: string, out nodeResult: tGridNode, out found: boolean)
+    var
+        i: integer;
+    end var
+
+    found := false;
+    i := 1;
+    while i ≤ alertTable.nNodes and not found do
+        if alertTable.nodes[i].nodeName = nodeName then
+            found := true;
+            nodeResult := alertTable.nodes[i];
+        end if
+        i := i + 1;
+    end while
+end action
 
 {Exercise 5.1}
-{...}
+action calculateGridStatistics(in table: tGridTable, out statistics: tGridStats)
+    var
+        tmpTable: tGridTable;
+        i: integer;
+        j: integer;
+        tmpNodeMaxConsumption: real;
+    end var
+
+    statistics.totalConsumption := 0;
+    statistics.maxVoltageDrop := 0;
+    statistics.maxNodeConsumption := 0;
+    statistics.totalNodes := table.nNodes;
+
+    getNodesWithAlerts(table, tmpTable);
+    if table.nNodes > 0 then
+        statistics.emergencyPercentage := tmpTable.nNodes / table.nNodes * 100;
+    else
+        statistics.emergencyPercentage := 0;
+    end if
+
+    for i := 1 to table.nNodes do
+        tmpNodeMaxConsumption := 0;
+        for j := 1 to SECTORS_PER_NODE do
+            statistics.totalConsumption := statistics.totalConsumption +
+                                           table.nodes[i].sectors[j].consumption;
+            if table.nodes[i].sectors[j].voltageDrop > statistics.maxVoltageDrop then
+                statistics.maxVoltageDrop := table.nodes[i].sectors[j].voltageDrop;
+                statistics.nodeWithMaxVoltageDrop := table.nodes[i].nodeName;
+            end if
+            tmpNodeMaxConsumption := tmpNodeMaxConsumption +
+                                     table.nodes[i].sectors[j].consumption;
+        end for
+        if tmpNodeMaxConsumption > statistics.maxNodeConsumption then
+            statistics.maxNodeConsumption := tmpNodeMaxConsumption;
+            statistics.nodeWithMaxConsumption := table.nodes[i].nodeName;
+        end if
+    end for
+end action
 
 {Exercise 5.2}
-{...}
+action printGridStatistics(in statistics: tGridStats)
+    writeString("TOTAL NODES: ");
+    writeInteger(statistics.totalNodes);
+    writeString("NODES IN ALERTS: ");
+    writeReal(statistics.emergencyPercentage);
+    writeString("%");
+    writeString("TOTAL NETWORK CONSUMPTION: ");
+    writeReal(statistics.totalConsumption);
+    writeString("PEAK CONSUMPTION NODE: ");
+    writeString(statistics.nodeWithMaxConsumption);
+    writeString(" (");
+    writeReal(statistics.maxNodeConsumption);
+    writeString(")");
+    writeString("MOST CRITICAL VOLTAGE DROP: ");
+    writeReal(statistics.maxVoltageDrop);
+    writeString(" AT NODE ");
+    writeString(statistics.nodeWithMaxVoltageDrop);
+end action
 
 algorithm PR4_Smart_Grid_Crisis_Management_Solution
     var
@@ -130,6 +318,7 @@ algorithm PR4_Smart_Grid_Crisis_Management_Solution
         found: boolean;
         isValidScale: boolean;
         stats: tGridStats;
+        nodeResult: tGridNode;
         i: integer;
     end var
 
@@ -156,26 +345,37 @@ algorithm PR4_Smart_Grid_Crisis_Management_Solution
 
     if isRead then
         {Exercises 2.x}
-        {Evaluate the status of each node}
-        {...}
+        i := 1;
+        while i ≤ grid.nNodes do
+            evaluateCrisisStatus(scale, grid.nodes[i]);
+            i := i + 1;
+        end while
 
-        {Exercises 3.x}
+        getNodesWithAlerts(grid, crisisResultsTable);
         writeString("RESULTS");
         writeString("NODES WITH ALERTS");
         writeString("=================");
-        {...}
 
         if crisisResultsTable.nNodes > 0 then
-            {...}
-            {Exercise 4.1}
-            {...}
+            writeGridStatus(crisisResultsTable);
+            writeString("SELECT NODE BY NAME TO SEARCH >>");
+            nodeName := readString();
+            getNode(crisisResultsTable, nodeName, nodeResult, found);
+            if not found then
+                writeString("NODE IS NOT IN ALERTS LIST");
+            else
+                printNodeData(nodeResult);
+            end if
         else
             writeString("NO ALERTS SITUATIONS");
         end if
 
-        {Exercise 5.x}
-        {...}
+        writeString("--- GLOBAL GRID STATISTICS ---");
+        calculateGridStatistics(grid, stats);
+        printGridStatistics(stats);
+        writeString("------------------------------");
     else
         writeString("ERROR: NO DATA RECOVERED FROM FILE ");
+        writeString(filename);
     end if
 end algorithm

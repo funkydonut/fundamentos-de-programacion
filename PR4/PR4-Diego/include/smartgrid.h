@@ -15,7 +15,6 @@
 
 /* Constants for conversion and thresholds */
 #define MW_FACTOR 0.001f
-#define OVERLOAD_TOTAL_THRESHOLD 500.0f
 #define CRITICAL_SECTOR_LIMIT 150.0f
 #define STABILITY_INDEX_THRESHOLD 120.0f
 #define MAX_UNSTABLE_SECTORS 3
